@@ -61,7 +61,7 @@ const typeDefs = `#graphql
     jobPosting: JobPosting
     applicationStatus: ApplicationStatus
     employmentStatus: EmploymentStatus
-    dateOfJobEmployment: Date
+    dateOfJobTermination: Date
   }
   type JobPosting {
     id: Int
@@ -104,6 +104,7 @@ const typeDefs = `#graphql
     name: String
     email: String
     telephone: String
+    password: String
     address: String
     educationId: Int
     gender: Gender
