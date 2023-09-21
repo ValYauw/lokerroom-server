@@ -193,7 +193,78 @@ afterAll(async () => {
   });
 })
 
-describe('GET Job Postings', () => {  
+describe('GET Multiple Job Postings', () => {  
+
+  it('should successfully fetch multiple postings', async () => {
+    const response = await request(app)
+      .get(entrypoints.jobPostings())
+    expect(response.statusCode).toBe(200);
+
+    const fetchedPostings = response.body;
+    expect(fetchedPostings.length).toBe(2);
+    // expect(fetchedPostings[0].name).toBeDefined();
+    // expect(fetchedPostings[0].email).toBeDefined();
+    // expect(fetchedPostings[0].telephone).toBeDefined();
+    // expect(fetchedPostings[0].address).toBeDefined();
+    // expect(fetchedPostings[0].imgUrl).toBeDefined();
+    // expect(fetchedPostings[0].educationLevel).toBeDefined();
+    // expect(fetchedPostings[0].gender).toBeDefined();
+    // expect(fetchedPostings[0].dateOfBirth).toBeDefined();
+    // expect(fetchedPostings[0].profileDescription).toBeDefined();
+    // expect(fetchedPostings[0].receivedReviews).toBeDefined();
+
+    // expect(fetchedPostings[0].password).toBeUndefined();
+    // expect(fetchedPostings[0].appliedJobs).toBeUndefined();
+    // expect(fetchedPostings[0].postedJobs).toBeUndefined();
+
+  });
+
+  it('should successfully filter job postings based on gender', async () => {
+    const response = await request(app)
+      .get(entrypoints.jobPostings())
+    expect(response.statusCode).toBe(200);
+  })
+
+});
+
+describe('GET One Job Posting', () => {  
+
+  it('should successfully get a posting by Id', async () => {
+    const response = await request(app)
+      .get(entrypoints.jobPosting(1))
+    expect(response.statusCode).toBe(200);
+
+    const { 
+      title, description, address, 
+      minSalary, maxSalary, employer, 
+      requiredGender, maxAge, requiredEducation,
+      status, isUrgent
+    } = response.body;
+    expect(title).toBeDefined();
+    expect(description).toBeDefined();
+    expect(address).toBeDefined();
+    expect(minSalary).toBeDefined();
+    expect(maxSalary).toBeDefined();
+    expect(employer).toBeDefined();
+    expect(requiredGender).toBeDefined();
+    expect(maxAge).toBeDefined();
+    expect(requiredEducation).toBeDefined();
+    expect(status).toBeDefined();
+    expect(isUrgent).toBeDefined();
+
+  });
+
+  it('should fail to get a non-existent posting', async () => {
+    const response = await request(app)
+      .get(entrypoints.jobPosting(200))
+    expect(response.statusCode).toBe(404);
+  });
+
+  it('should fail to get a posting with an invalid Id', async () => {
+    const response = await request(app)
+      .get(entrypoints.jobPosting("abcd"))
+    expect(response.statusCode).toBe(404);
+  });
 
 });
 

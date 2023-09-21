@@ -12,7 +12,15 @@ const entrypoints = {
   myJobPostings: '/user/job-postings',
 
   // TODO: Testing
-  jobPostings: '/job-postings',
+  jobPostings: (pageNumber = 1, {requiredGender, maxAge, minEducation, location, isUrgent} = {}) => {
+    let query = '';
+    if (requiredGender) query += `&gender=${requiredGender}`;
+    if (maxAge) query += `&maxAge=${maxAge}`;
+    if (minEducation) query += `&minEducation=${minEducation}`;
+    if (location) query += `&location=${location}`;
+    if (isUrgent) query += `&isUrgent=${isUrgent}`;
+    return `/job-postings?p=${pageNumber}${query}`
+  },
   jobPosting: (id) => `/job-postings/${id}`,
 
   applyToJob: (id) => `/job-postings/${id}/apply`,
