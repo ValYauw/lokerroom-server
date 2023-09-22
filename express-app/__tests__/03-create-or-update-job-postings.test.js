@@ -394,3 +394,65 @@ describe('PUT Job Posting', () => {
   });
 
 });
+
+describe('PATCH Job Posting', () => {  
+
+  let access_token;
+  beforeAll(async () => {
+    const response = await request(app)
+      .post(entrypoints.login)
+      .send({
+        telephone: users[0].telephone,
+        password: users[0].password
+      });
+    access_token = response.body.access_token;
+  });
+
+  it('should successfully update a job posting\'s status', async () => {
+
+    const response = await request(app)
+      .patch(entrypoints.editJobPosting(1))
+      .set('access_token', access_token)
+      .send({
+        status: 'Filled'
+      });
+    expect(response.statusCode).toBe(200);
+
+    const fetchResponse = await request(app)
+      .get(entrypoints.jobPosting(1));
+    expect(fetchResponse.statusCode).toBe(200);
+    const { status } = fetchResponse.body;
+    expect(status).toBe('Filled');
+
+  });
+
+  it('should fail to update a job posting without authentication', async () => {
+    const response = await request(app)
+      .patch(entrypoints.editJobPosting(1))
+      .send({
+        status: 'Filled'
+      });
+    expect(response.statusCode).toBe(401);
+  });
+
+  it('should forbid to update a job posting without correct authentication', async () => {
+
+    const loginResponse = await request(app)
+      .post(entrypoints.login)
+      .send({
+        telephone: users[1].telephone,
+        password: users[1].password
+      });
+    access_token = loginResponse.body.access_token;
+
+    const response = await request(app)
+      .put(entrypoints.editJobPosting(1))
+      .set('access_token', access_token)
+      .send({
+        status: 'Filled'
+      });
+    expect(response.statusCode).toBe(403);
+
+  });
+
+});
