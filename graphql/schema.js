@@ -6,18 +6,14 @@ const typeDefs = `#graphql
     Female
   }
   enum ApplicationStatus {
-    Diterima
-    Ditolak
-    Diproses
-  }
-  enum EmploymentStatus {
-    Bekerja
-    Berhenti
+    Accepted
+    Rejected
+    Processing
   }
   enum JobPostingStatus {
-    Aktif
-    Tidak Aktif
-    Terpenuhi
+    Active
+    Inactive
+    Filled
   }
 
 
@@ -27,11 +23,15 @@ const typeDefs = `#graphql
     education: String
     priority: Int
   }
+  type Category {
+    id: Int
+    name: String
+  }
   type User {
     id: Int 
     name: String
-    email: String
     telephone: String
+    email: String
     address: String
     imgUrl: String
     educationLevel: EducationLevel
@@ -43,15 +43,14 @@ const typeDefs = `#graphql
   type Me {
     id: Int 
     name: String
-    email: String
     telephone: String
+    email: String
     address: String
     imgUrl: String
     educationLevel: EducationLevel
     gender: Gender
     dateOfBirth: Date
     profileDescription: String
-    password: String
     appliedJobs: [JobApplication]
     postedJobs: [JobPosting]
     receivedReviews: [Review]
@@ -60,17 +59,19 @@ const typeDefs = `#graphql
     id: Int
     jobPosting: JobPosting
     applicationStatus: ApplicationStatus
-    employmentStatus: EmploymentStatus
-    dateOfJobTermination: Date
+    isEmployed: Boolean
+    startDateOfEmployment: Date
+    endDateOfEmployment: Date
   }
   type JobPosting {
     id: Int
     title: String
     description: String
     address: String
+    category: Category
     minSalary: Int
     maxSalary: Int
-    employer: User
+    author: User
     requiredGender: Gender
     maxAge: Int
     requiredEducation: EducationLevel
@@ -82,7 +83,7 @@ const typeDefs = `#graphql
     employer: User
     user: User
     jobPosting: JobPosting
-    body: String
+    content: String
     rating: Int
   }
 
@@ -96,36 +97,46 @@ const typeDefs = `#graphql
 
   # Input Types buat Mutation
   input loginCredentials {
-    email: String
     telephone: String
+    email: String
     password: String
   }
   input registerDetails {
     name: String
-    email: String
     telephone: String
+    email: String
     password: String
     address: String
     educationId: Int
     gender: Gender
     dateOfBirth: Date
+    profileDescription: String
+  }
+  input userDetails {
+    name: String
+    address: String
+    imgUrl: String
+    educationId: Int
+    gender: Gender
+    dateOfBirth: Date
+    profileDescription: String
   }
   input newJobPosting {
     title: String
     description: String
     address: String
+    categoryId: Int
     minSalary: Int
     maxSalary: Int
     requiredGender: Gender
     maxAge: Int
     requiredEducation: Int
-    status: JobPostingStatus
     isUrgent: Boolean
   }
   input newReview {
     userId: Int
     jobPostingId: Int
-    body: String
+    content: String
     rating: Int
   }
 
@@ -136,9 +147,10 @@ const typeDefs = `#graphql
     users(pageNumber: Int): [User]
     jobPostingById(id: Int!): JobPosting
     jobPostings(
-      requiredGender: Gender, 
+      gender: Gender, 
       maxAge: Int, 
-      minEducation: EducationLevel, 
+      categoryId: Int,
+      maxEducation: EducationLevel, 
       location: String, 
       isUrgent: Boolean,
       pageNumber: Int
@@ -147,9 +159,13 @@ const typeDefs = `#graphql
   type Mutation {
     register(registerDetails: registerDetails): Response
     login(loginCredentials: loginCredentials): Response
+    editUserDetails(userDetails: userDetails): Response
     addNewJobPosting(newJobPosting: newJobPosting): JobPosting
     editJobPosting(newJobPosting: newJobPosting): JobPosting
     applyToJob(id: Int): JobApplication
+    acceptJobApplication(id: Int): Response
+    rejectJobApplication(id: Int): Response
+    endEmploymentForJobApplication(id: Int): Response
     addReview(newReview: newReview): Review
   }
 `;
