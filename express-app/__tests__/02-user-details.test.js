@@ -42,8 +42,8 @@ const educationLevels = [
   }
 ];
 const categories = [
-  { name: 'Labour' },
-  { name: 'Office' }
+  { name: 'Labour', createdAt: dummyDate, updatedAt: dummyDate },
+  { name: 'Office', createdAt: dummyDate, updatedAt: dummyDate }
 ];
 const users = [
   {
