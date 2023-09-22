@@ -41,7 +41,7 @@
    Mengupdate status posting lowongan kerja (dari 3 pilihan: Active, Inactive, atau Filled)
  - POST	  `/job-postings/:id/application`<br>
    Apply kepada satu job posting
- - PATCH	`/job-postings/:id/application`<br>
+ - PATCH	`/job-postings/:id/application/:appId`<br>
    Employer mengupdate status job application, di antara kasus:
     - Menerima lamaran, dan user yang diterima memulai pekerjaan
     - Menolak lamaran
