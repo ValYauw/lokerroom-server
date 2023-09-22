@@ -19,6 +19,7 @@
     - `education` - Filter pekerjaan dengan min education requirement di bawah nilai query
     - `location` - Filter pekerjaan di location terpilih
     - `isUrgent` - Filter pekerjaan yang urgent
+    - `status` - Filter pekerjaan dengan status tertentu (default: Status Active)
  - GET    `/job-postings/:id`
 
 ## Memerlukan authentication
@@ -30,10 +31,14 @@
    Daftarkan job application yang sudah dibuat oleh diri sendiri (setelah login)
  - GET    `/user/job-postings`<br>
    Daftarkan job posting yang sudah dibuat oleh diri sendiri (setelah login)
+ - PATCH  `/user`<br>
+   Mengupdate name, address, imgUrl, EducationId, gender, dateOfBirth, ataupun profileDescription dari diri sendiri
  - POST	  `/job-postings`<br>
    Membuat posting lowongan kerja baru
  - PUT	  `/job-postings/:id`<br>
    Mengupdate posting lowongan kerja
+ - PATCH  `/job-postings/:id`<br>
+   Mengupdate status posting lowongan kerja (dari 3 pilihan: Active, Inactive, atau Filled)
  - POST	  `/job-postings/:id/application`<br>
    Apply kepada satu job posting
  - PATCH	`/job-postings/:id/application`<br>
