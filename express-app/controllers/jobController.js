@@ -214,7 +214,36 @@ class Controller {
 
   static async applyToJob(req, res, next) {
     try {
+      const { id } = req.params;
+      if (!id || isNaN(id)) throw { name: 'NotFoundError' };
+      const jobPosting = await JobPosting.findByPk(id);
+      if (!jobPosting) throw { name: 'NotFoundError' };
+      if (jobPosting.status !== 'Active') {
+        return res.status(400).json({
+          message: 'Job posting is no longer active'
+        })
+      }
 
+      let jobApplication = await JobApplication.findOne({
+        where: { 
+          UserId: req.user.id, 
+          JobPostingId: id 
+        }
+      });
+      if (jobApplication) {
+        return res.status(400).json({
+          message: 'User has already applied to this job posting'
+        })
+      };
+
+      await JobApplication.create({
+        UserId: req.user.id,
+        JobPostingId: id,
+        applicationStatus: 'Processing'
+      });
+      res.status(201).json({
+        message: 'Job application has been posted'
+      })
     } catch(err) {
       next(err);
     }
@@ -222,7 +251,16 @@ class Controller {
 
   static async processJobApplication(req, res, next) {
     try {
-
+      const { id, appId } = req.params;
+      const { applicationStatus } = req.body;
+      if (!appId || isNaN(appId)) throw { name: 'NotFoundError' };
+      const jobApplication = await JobApplication.findByPk(appId);
+      if (!jobApplication) throw { name: 'NotFoundError' };
+      if (jobApplication.JobPostingId !== +id) throw { name: 'Forbidden' };
+      await JobApplication.update({ applicationStatus }, { id: appId });
+      res.status(200).json({
+        message: 'Successfully changed job application status'
+      })
     } catch(err) {
       next(err);
     }

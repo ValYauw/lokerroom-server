@@ -35,8 +35,11 @@ const entrypoints = {
   // PUT
   editJobPosting: (id) => `/job-postings/${id}`,
 
-  // POST, PATCH
+  // POST
   applyToJob: (id) => `/job-postings/${id}/application`,
+
+  // PATCH
+  processJobApplication: (id, appId) => `/job-postings/${id}/application/${appId}`,
 
   // POST
   reviewUser: (id) => `/users/${id}/review`,

@@ -257,7 +257,15 @@ class Controller {
 
   static async editLoggedInUserDetails(req, res, next) {
     try {
-
+      const { address, imgUrl, educationId, profileDescription } = req.body;
+      await User.update({
+        address, imgUrl, educationId, profileDescription
+      }, {
+        where: { id: req.user.id }
+      });
+      res.status(200).json({
+        message: 'Updated user details'
+      })
     } catch(err) {
       next(err);
     }
@@ -265,6 +273,27 @@ class Controller {
 
   static async addReview(req, res, next) {
     try {
+
+      const { id } = req.params;
+      const { jobPostingId, content, rating } = req.body;
+
+      if (!id || isNaN(id)) throw { name: 'NotFoundError' };
+      if (!jobPostingId || isNaN(jobPostingId)) throw { name: 'NotFoundError' };
+      const jobPosting = await JobPosting.findByPk(jobPostingId, {
+        attributes: ['id', 'AuthorId']
+      });
+      if (!jobPosting) throw { name: 'NotFoundError' };
+      if (jobPosting.AuthorId !== req.user.id) throw { name: 'Forbidden' };
+      
+      await Review.create({
+        EmployerId: req.user.id,
+        UserId: id,
+        JobPostingId: jobPostingId,
+        content, rating
+      });
+      res.status(201).json({
+        message: 'Added review'
+      });
 
     } catch(err) {
       next(err);

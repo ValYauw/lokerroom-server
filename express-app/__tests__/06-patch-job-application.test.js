@@ -106,6 +106,22 @@ const jobPostings = [
     isUrgent: false,
     createdAt: dummyDate,
     updatedAt: dummyDate
+  },
+  {
+    title: "Janitor",
+    description: "Job Posting 3",
+    address: "Jakarta",
+    CategoryId: 1,
+    minSalary: 100_000,
+    maxSalary: 300_000,
+    AuthorId: 1,
+    requiredGender: 'Male',
+    maxAge: 30,
+    RequiredEducation: 1,
+    status: 'Active',
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   }
 ];
 const jobApplications = [
@@ -122,6 +138,16 @@ const jobApplications = [
   {
     UserId: 2,
     JobPostingId: 2,
+    applicationStatus: 'Processing',
+    isEmployed: null,
+    startDateOfEmployment: null,
+    endDateOfEmployment: null,
+    createdAt: dummyDate,
+    updatedAt: dummyDate,
+  },
+  {
+    UserId: 2,
+    JobPostingId: 3,
     applicationStatus: 'Processing',
     isEmployed: null,
     startDateOfEmployment: null,
@@ -182,7 +208,7 @@ describe('PATCH Job Application', () => {
   it('should successfully patch a job application (accept application)', async () => {
 
     const response = await request(app)
-      .patch(entrypoints.applyToJob(1))
+      .patch(entrypoints.processJobApplication(1, 1))
       .set('access_token', employer_access_token)
       .send({
         applicationStatus: 'Accepted'
@@ -211,7 +237,7 @@ describe('PATCH Job Application', () => {
   it('should successfully patch a job application (reject application)', async () => {
 
     const response = await request(app)
-      .patch(entrypoints.applyToJob(2))
+      .patch(entrypoints.processJobApplication(2, 2))
       .set('access_token', access_token)
       .send({
         applicationStatus: 'Rejected'
@@ -237,7 +263,7 @@ describe('PATCH Job Application', () => {
   it('should successfully patch a job application (finished job)', async () => {
 
     const response = await request(app)
-      .patch(entrypoints.applyToJob(1))
+      .patch(entrypoints.processJobApplication(1, 1))
       .set('access_token', employer_access_token)
       .send({
         isEmployed: false
@@ -264,7 +290,7 @@ describe('PATCH Job Application', () => {
 
   it('should fail to patch a non-existent job application', async () => {
     const response = await request(app)
-      .patch(entrypoints.applyToJob(200))
+      .patch(entrypoints.processJobApplication(1, 200))
       .set('access_token', employer_access_token)
       .send({
         applicationStatus: 'Accepted'
@@ -275,7 +301,7 @@ describe('PATCH Job Application', () => {
 
   it('should fail to patch a job application with an invalid id', async () => {
     const response = await request(app)
-      .patch(entrypoints.applyToJob("abcd"))
+      .patch(entrypoints.processJobApplication(1, "abcd"))
       .set('access_token', employer_access_token)
       .send({
         applicationStatus: 'Accepted'
@@ -286,7 +312,7 @@ describe('PATCH Job Application', () => {
 
   it('should fail to patch a job application with no authentication', async () => {
     const response = await request(app)
-      .patch(entrypoints.applyToJob(1))
+      .patch(entrypoints.processJobApplication(1, 1))
       .send({
         applicationStatus: 'Accepted'
       });
@@ -296,12 +322,23 @@ describe('PATCH Job Application', () => {
 
   it('should forbid to patch a job application if the user is not the author of the job posting', async () => {
     const response = await request(app)
-      .patch(entrypoints.applyToJob(2))
+      .patch(entrypoints.processJobApplication(3, 3))
       .set('access_token', applicant_access_token)
       .send({
         applicationStatus: 'Accepted'
       });
     expect(response.statusCode).toBe(403);
+    expect(response.body.message).toBeDefined();
+  });
+
+  it('should fail to patch a job application if the application status is an invalid string', async () => {
+    const response = await request(app)
+      .patch(entrypoints.processJobApplication(3, 3))
+      .set('access_token', employer_access_token)
+      .send({
+        applicationStatus: 'gibberish'
+      });
+    expect(response.statusCode).toBe(400);
     expect(response.body.message).toBeDefined();
   });
 
