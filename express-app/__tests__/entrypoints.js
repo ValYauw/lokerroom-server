@@ -26,6 +26,8 @@ const entrypoints = {
     return `/job-postings?p=${pageNumber}${query}`
   },
   jobPosting: (id) => `/job-postings/${id}`,
+  categories: '/categories',
+  educationLevels: '/education-levels',
   
   // POST
   addJobPosting: '/job-postings',

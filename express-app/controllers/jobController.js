@@ -5,6 +5,34 @@ const { NUM_JOB_POSTINGS_PER_PAGE } = require('../config/pagination');
 
 class Controller {
 
+  static async getCategories(req, res, next) {
+    try {
+      const categories = await Category.findAll({
+        attributes: {
+          exclude: ['createdAt', 'updatedAt']
+        },
+        order: [['name', 'ASC']]
+      })
+      res.status(200).json(categories);
+    } catch(err) {
+      next(err);
+    }
+  }
+
+  static async getEducationLevels(req, res, next) {
+    try {
+      const educationLevels = await EducationLevel.findAll({
+        attributes: {
+          exclude: ['createdAt', 'updatedAt']
+        },
+        order: [['priority', 'ASC'], ['id', 'ASC']]
+      })
+      res.status(200).json(educationLevels);
+    } catch(err) {
+      next(err);
+    }
+  }
+
   static async getJobPostings(req, res, next) {
     try {
       const p = req.query.p || 1;

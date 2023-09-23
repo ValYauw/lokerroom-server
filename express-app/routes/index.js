@@ -9,10 +9,16 @@ const authorization = require('../middleware/authorization');
 router.get('/', (req, res) => {
   res.send('Welcome to the API entrypoint');
 });
+
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
+
 router.get('/users', UserController.getUsers);
 router.get('/users/:id', UserController.getUserById);
+
+router.get('/categories', JobController.getCategories);
+router.get('/education-levels', JobController.getEducationLevels);
+
 router.get('/job-postings', JobController.getJobPostings);
 router.get('/job-postings/:id', JobController.getJobPostingById);
 
