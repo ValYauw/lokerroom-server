@@ -11,12 +11,7 @@ class Controller {
       const { gender, maxAge, categoryId, education, location, isUrgent, status } = req.query;
 
       const filter = {};
-      if (gender) filter.requiredGender = {
-        [Op.or]: [
-          gender,
-          null
-        ]
-      };
+      if (gender) filter.requiredGender = gender;
       if (maxAge) filter.maxAge = {
         [Op.lte]: maxAge
       }
@@ -27,7 +22,9 @@ class Controller {
           null
         ]
       }
-      if (location) filter.location = location;
+      if (location) filter.address = {
+        [Op.like]: `%${location}%`
+      };
       if (isUrgent) filter.isUrgent = true;
       if (status) filter.status = {
         [Op.in]: status.split(',')
@@ -102,6 +99,7 @@ class Controller {
           }
         ]
       });
+      if (!jobPosting) throw { name: 'NotFoundError' };
       res.status(200).json(jobPosting);
     } catch(err) {
       next(err);
