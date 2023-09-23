@@ -65,7 +65,7 @@ class Controller {
   static async getUsers(req, res, next) {
     try {
       const p = req.query.q || 1;
-      const users = await User.findAll({
+      const { count, rows } = await User.findAndCountAll({
         attributes: {
           exclude: ['password', 'EducationId', 'createdAt', 'updatedAt']
         },
@@ -89,7 +89,10 @@ class Controller {
         limit: NUM_USERS_PER_PAGE,
         offset: (p-1) * NUM_USERS_PER_PAGE
       });
-      res.status(200).json(users);
+      res.status(200).json({
+        numPages: Math.ceil(count / NUM_USERS_PER_PAGE),
+        data: rows
+      });
     } catch(err) {
       next(err);
     }

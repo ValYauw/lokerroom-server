@@ -135,7 +135,7 @@ describe('POST Job Posting', () => {
     expect(fetchResponse.statusCode).toBe(200);
     const { 
       title, description, address, category,
-      minSalary, maxSalary, employer, requiredGender, 
+      minSalary, maxSalary, author, requiredGender, 
       maxAge, requiredEducation, isUrgent
     } = fetchResponse.body;
     expect(title).toBe(testData.title);
@@ -144,7 +144,7 @@ describe('POST Job Posting', () => {
     expect(category.id).toBe(testData.categoryId);
     expect(minSalary).toBe(testData.minSalary);
     expect(maxSalary).toBe(testData.maxSalary);
-    expect(employer.id).toBe(1);
+    expect(author.id).toBe(1);
     expect(requiredGender).toBe(testData.requiredGender);
     expect(maxAge).toBe(testData.maxAge);
     expect(requiredEducation.id).toBe(testData.requiredEducation);
@@ -172,7 +172,7 @@ describe('POST Job Posting', () => {
     expect(fetchResponse.statusCode).toBe(200);
     const { 
       title, description, address, category,
-      minSalary, maxSalary, employer, requiredGender, 
+      minSalary, maxSalary, author, requiredGender, 
       maxAge, requiredEducation, isUrgent
     } = fetchResponse.body;
     expect(title).toBe(testData.title);
@@ -181,7 +181,7 @@ describe('POST Job Posting', () => {
     expect(category.id).toBe(testData.categoryId);
     expect(minSalary).toBeNull();
     expect(maxSalary).toBeNull();
-    expect(employer.id).toBe(1);
+    expect(author.id).toBe(1);
     expect(requiredGender).toBeNull();
     expect(maxAge).toBeNull();
     expect(requiredEducation).toBeNull();
@@ -266,7 +266,7 @@ describe('POST Job Posting', () => {
 
   });
 
-  it('should fail to add a job posting without category', async () => {
+  it('should successfully add a job posting without category', async () => {
 
     const testData = {
       title: "URGENT!!!!",
@@ -279,8 +279,7 @@ describe('POST Job Posting', () => {
       .post(entrypoints.addJobPosting)
       .set('access_token', access_token)
       .send(testData);
-    expect(response.statusCode).toBe(400);
-    expect(response.body.message).toBeDefined();
+    expect(response.statusCode).toBe(201);
 
   });
 
@@ -325,7 +324,7 @@ describe('PUT Job Posting', () => {
     expect(fetchResponse.statusCode).toBe(200);
     const { 
       title, description, address, category,
-      minSalary, maxSalary, employer, requiredGender, 
+      minSalary, maxSalary, author, requiredGender, 
       maxAge, requiredEducation, isUrgent
     } = fetchResponse.body;
     expect(title).toBe(testData.title);
@@ -334,7 +333,7 @@ describe('PUT Job Posting', () => {
     expect(category.id).toBe(testData.categoryId);
     expect(minSalary).toBe(testData.minSalary);
     expect(maxSalary).toBe(testData.maxSalary);
-    expect(employer.id).toBe(1);
+    expect(author.id).toBe(1);
     expect(requiredGender).toBe(testData.requiredGender);
     expect(maxAge).toBe(testData.maxAge);
     expect(requiredEducation).toBeNull();

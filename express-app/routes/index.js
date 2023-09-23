@@ -14,6 +14,7 @@ router.post('/register', UserController.register);
 router.get('/users', UserController.getUsers);
 router.get('/users/:id', UserController.getUserById);
 router.get('/job-postings', JobController.getJobPostings);
+router.get('/job-postings/:id', JobController.getJobPostingById);
 
 router.use(authentication);
 

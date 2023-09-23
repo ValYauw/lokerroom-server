@@ -235,7 +235,8 @@ describe('GET User without authentication', () => {
       .get(entrypoints.users())
     expect(response.statusCode).toBe(200);
 
-    const fetchedUsers = response.body;
+    const { numPages, data: fetchedUsers } = response.body;
+    expect(numPages).toBe(1);
     expect(fetchedUsers.length).toBe(2);
     const { 
       name, telephone, email, address, imgUrl, 
