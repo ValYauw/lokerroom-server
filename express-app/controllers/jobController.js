@@ -1,4 +1,4 @@
-const { User, JobPosting, JobApplication, Review, Category, EducationLevel } = require("../models/model");
+const { User, JobPosting, JobApplication, Review, Category, EducationLevel } = require("../models");
 
 class Controller {
 

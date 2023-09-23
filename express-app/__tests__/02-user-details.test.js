@@ -301,13 +301,14 @@ describe('GET my details with authentication', () => {
     expect(response.statusCode).toBe(200);
 
     const { 
-      id, name, email, telephone, address, imgUrl, educationLevel, 
+      id, name, email, telephone, password, address, imgUrl, educationLevel, 
       gender, dateOfBirth, profileDescription
     } = response.body;
     expect(id).toBe(2);
     expect(name).toBe(users[1].name);
     expect(telephone).toBe(users[1].telephone);
     expect(email).toBe(users[1].email);
+    expect(password).toBeUndefined();
     expect(address).toBe(users[1].address);
     expect(imgUrl).toBe(users[1].imgUrl);
     expect(educationLevel.id).toBe(users[1].EducationId);

@@ -224,7 +224,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(201);
     const { message } = response.body;
@@ -241,7 +241,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 2,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(201);
     const { message } = response.body;
@@ -268,12 +268,12 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
     expect(message).toBeDefined();
-    expect(message).toBe("Email/telephone is required");
+    expect(message).toBe("Phone number is required");
   });
 
   it('should fail to register (name is empty)', async () => {
@@ -287,7 +287,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -306,12 +306,31 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
     expect(message).toBeDefined();
     expect(message).toBe("Password is required");
+  });
+
+  it('should fail to register (password is too short)', async () => {
+    const response = await request(app)
+      .post(entrypoints.register)
+      .send({
+        name: "Acep",
+        telephone: "0815421099",
+        email: "",
+        password: "a",
+        address: "Depok",
+        educationId: 1,
+        gender: "Male",
+        dateOfBirth: "2000-01-15",
+      })
+    expect(response.statusCode).toBe(400);
+    const { message } = response.body;
+    expect(message).toBeDefined();
+    expect(message).toBe("Password must be at least 5 characters long");
   });
 
   it('should fail to register (address is empty)', async () => {
@@ -325,7 +344,7 @@ describe('POST User register', () => {
         address: "",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -344,7 +363,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -381,7 +400,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "01-03-2001",
+        dateOfBirth: "2001-03-10",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -400,7 +419,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "01-03-2001",
+        dateOfBirth: "2001-03-10",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;

@@ -41,4 +41,4 @@ const entrypoints = {
 
 }
 
-export default entrypoints;
+module.exports = entrypoints;

@@ -1,4 +1,4 @@
-const { JobPosting } = require("../models/model");
+const { JobPosting } = require("../models");
 
 async function authorization(req, res, next) {
   try {
