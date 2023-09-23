@@ -1,0 +1,50 @@
+[
+  {
+    "UserId": 2,
+    "JobPostingId": 1,
+    "applicationStatus": "Accepted",
+    "isEmployed": false,
+    "startDateOfEmployment": "2022-08-31",
+    "endDateOfEmployment": "2022-12-01"
+  },
+  {
+    "UserId": 2,
+    "JobPostingId": 2,
+    "applicationStatus": "Processing",
+    "isEmployed": null,
+    "startDateOfEmployment": null,
+    "endDateOfEmployment": null
+  },
+  {
+    "UserId": 2,
+    "JobPostingId": 4,
+    "applicationStatus": "Rejected",
+    "isEmployed": null,
+    "startDateOfEmployment": null,
+    "endDateOfEmployment": null
+  },
+  {
+    "UserId": 2,
+    "JobPostingId": 5,
+    "applicationStatus": "Accepted",
+    "isEmployed": false,
+    "startDateOfEmployment": "2023-01-01",
+    "endDateOfEmployment": "2023-02-01"
+  },
+  {
+    "UserId": 2,
+    "JobPostingId": 6,
+    "applicationStatus": "Accepted",
+    "isEmployed": false,
+    "startDateOfEmployment": "2023-02-05",
+    "endDateOfEmployment": "2023-02-20"
+  },
+  {
+    "UserId": 2,
+    "JobPostingId": 7,
+    "applicationStatus": "Accepted",
+    "isEmployed": false,
+    "startDateOfEmployment": "2023-04-01",
+    "endDateOfEmployment": "2023-07-31"
+  }
+]

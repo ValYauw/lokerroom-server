@@ -1,0 +1,30 @@
+[
+  {
+    "EmployerId": 1,
+    "UserId": 2,
+    "JobPostingId": 1,
+    "content": "Pekerja bagus",
+    "rating": 5
+  },
+  {
+    "EmployerId": 1,
+    "UserId": 2,
+    "JobPostingId": 4,
+    "content": "Anger Issues",
+    "rating": 1
+  },
+  {
+    "EmployerId": 1,
+    "UserId": 2,
+    "JobPostingId": 5,
+    "content": "Gampang emosi",
+    "rating": 1
+  },
+  {
+    "EmployerId": 1,
+    "UserId": 2,
+    "JobPostingId": 6,
+    "content": "Pekerja bagus",
+    "rating": 4
+  }
+]

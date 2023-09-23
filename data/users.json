@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Gober Bebek",
+    "email": "gober.bebek@mail.com",
+    "password": "password",
+    "telephone": "081113334465",
+    "address": "Jakarta",
+    "imgUrl": null,
+    "EducationId": 2,
+    "gender": "Male",
+    "dateOfBirth": "30-01-1985"
+  },
+  {
+    "name": "Donal Bebek",
+    "email": "donal.bebek@mail.com",
+    "password": "password",
+    "telephone": "081113334467",
+    "address": "Jakarta",
+    "imgUrl": null,
+    "EducationId": 3,
+    "gender": "Male",
+    "dateOfBirth": "01-04-1999"
+  }
+]
