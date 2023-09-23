@@ -51,8 +51,8 @@ const users = [
     imgUrl: null,
     EducationId: 1,
     gender: "Male",
-    dateOfBirth: "20-12-2001",
-    profileDescription: null,
+    dateOfBirth: new Date("2001-12-20T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -65,8 +65,8 @@ const users = [
     imgUrl: "https://dummyimage.com/100x100/000/fff",
     EducationId: 1,
     gender: "Male",
-    dateOfBirth: "01-03-1995",
-    profileDescription: null,
+    dateOfBirth: new Date("1995-03-01T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -79,7 +79,7 @@ const users = [
     imgUrl: null,
     EducationId: 2,
     gender: "Female",
-    dateOfBirth: "05-10-1999",
+    dateOfBirth: new Date("1999-10-05T00:00:00"),
     profileDescription: null,
     createdAt: dummyDate,
     updatedAt: dummyDate

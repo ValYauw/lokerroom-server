@@ -67,7 +67,7 @@ class Controller {
       const p = req.query.q || 1;
       const users = await User.findAll({
         attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt']
+          exclude: ['password', 'EducationId', 'createdAt', 'updatedAt']
         },
         include: [
           {
@@ -80,7 +80,9 @@ class Controller {
             as: 'receivedReviews',
             attributes: {
               exclude: ['createdAt', 'updatedAt']
-            }
+            },
+            limit: 3,
+            order: [['createdAt', 'DESC'], ['id', 'DESC']]
           }
         ],
         order: [['name', 'ASC'], ['id', 'ASC']],
@@ -99,7 +101,7 @@ class Controller {
       if (isNaN(id)) throw { name: 'NotFoundError' };
       const user = await User.findByPk(id, {
         attributes: {
-          exclude: ['password', 'createdAt', 'updatedAt']
+          exclude: ['password', 'EducationId', 'createdAt', 'updatedAt']
         },
         include: [
           {
@@ -112,7 +114,8 @@ class Controller {
             as: 'receivedReviews',
             attributes: {
               exclude: ['createdAt', 'updatedAt']
-            }
+            },
+            order: [['createdAt', 'DESC'], ['id', 'DESC']]
           }
         ]
       });
@@ -149,7 +152,7 @@ class Controller {
       const { id } = req.user;
       const reviews = await Review.findAll({
         attributes: {
-          exclude: ['EmployerId', 'UserId', 'createdAt', 'updatedAt']
+          exclude: ['EmployerId', 'UserId', 'JobPostingId', 'createdAt', 'updatedAt']
         },
         where: {
           UserId: id
@@ -157,9 +160,20 @@ class Controller {
         include: [
           {
             model: User,
-            as: 'employer'
+            as: 'employer',
+            attributes: {
+              exclude: ['password', 'createdAt', 'updatedAt']
+            }
+          },
+          {
+            model: JobPosting,
+            as: 'jobPosting',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
           }
-        ]
+        ],
+        order: [['createdAt', 'DESC'], ['id', 'DESC']]
       });
       res.status(200).json(reviews);
     } catch(err) {
@@ -190,7 +204,8 @@ class Controller {
               }
             }
           }
-        ]
+        ],
+        order: [['createdAt', 'DESC'], ['id', 'DESC']]
       });
       res.status(200).json(jobApplications);
     } catch(err) {
@@ -226,9 +241,10 @@ class Controller {
           {
             model: EducationLevel,
             as: 'requiredEducation',
-            attributes: ['id', 'name']
+            attributes: ['id', 'education']
           }
-        ]
+        ],
+        order: [['createdAt', 'DESC'], ['id', 'DESC']]
       });
       res.status(200).json(jobPostings);
     } catch(err) {

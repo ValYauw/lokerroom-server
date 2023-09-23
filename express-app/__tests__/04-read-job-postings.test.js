@@ -57,7 +57,8 @@ const users = [
     imgUrl: null,
     EducationId: 2,
     gender: "Male",
-    dateOfBirth: "30-01-1985",
+    dateOfBirth: new Date("1985-01-30T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   }
@@ -75,7 +76,9 @@ const jobPostings = [
     maxAge: 30,
     RequiredEducation: 1,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "ART",
@@ -89,7 +92,9 @@ const jobPostings = [
     maxAge: null,
     RequiredEducation: 1,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Koki",
@@ -103,7 +108,9 @@ const jobPostings = [
     maxAge: null,
     RequiredEducation: 2,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Onsite drill team",
@@ -117,7 +124,9 @@ const jobPostings = [
     maxAge: 25,
     RequiredEducation: 3,
     status: 'Active',
-    isUrgent: true
+    isUrgent: true,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Gamer",
@@ -131,7 +140,9 @@ const jobPostings = [
     maxAge: null,
     RequiredEducation: null,
     status: 'Inactive',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
 ];
 /* 

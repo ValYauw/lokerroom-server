@@ -54,7 +54,8 @@ const users = [
     imgUrl: null,
     EducationId: 2,
     gender: "Male",
-    dateOfBirth: "30-01-1985",
+    dateOfBirth: new Date("1985-01-30T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -67,7 +68,8 @@ const users = [
     imgUrl: null,
     EducationId: 3,
     gender: "Male",
-    dateOfBirth: "02-04-2005",
+    dateOfBirth: new Date("2005-04-02T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
