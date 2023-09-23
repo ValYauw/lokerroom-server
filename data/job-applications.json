@@ -4,8 +4,8 @@
     "JobPostingId": 1,
     "applicationStatus": "Accepted",
     "isEmployed": false,
-    "startDateOfEmployment": "2022-08-31",
-    "endDateOfEmployment": "2022-12-01"
+    "startDateOfEmployment": "2022-08-31T00:00:00",
+    "endDateOfEmployment": "2022-12-01T00:00:00"
   },
   {
     "UserId": 2,
@@ -28,23 +28,23 @@
     "JobPostingId": 5,
     "applicationStatus": "Accepted",
     "isEmployed": false,
-    "startDateOfEmployment": "2023-01-01",
-    "endDateOfEmployment": "2023-02-01"
+    "startDateOfEmployment": "2023-01-01T00:00:00",
+    "endDateOfEmployment": "2023-02-01T00:00:00"
   },
   {
     "UserId": 2,
     "JobPostingId": 6,
     "applicationStatus": "Accepted",
     "isEmployed": false,
-    "startDateOfEmployment": "2023-02-05",
-    "endDateOfEmployment": "2023-02-20"
+    "startDateOfEmployment": "2023-02-05T00:00:00",
+    "endDateOfEmployment": "2023-02-20T00:00:00"
   },
   {
     "UserId": 2,
     "JobPostingId": 7,
     "applicationStatus": "Accepted",
     "isEmployed": false,
-    "startDateOfEmployment": "2023-04-01",
-    "endDateOfEmployment": "2023-07-31"
+    "startDateOfEmployment": "2023-04-01T00:00:00",
+    "endDateOfEmployment": "2023-07-31T00:00:00"
   }
 ]

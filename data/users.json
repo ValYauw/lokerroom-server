@@ -8,7 +8,8 @@
     "imgUrl": null,
     "EducationId": 2,
     "gender": "Male",
-    "dateOfBirth": "30-01-1985"
+    "dateOfBirth": "1985-01-30T00:00:00",
+    "profileDescription": ""
   },
   {
     "name": "Donal Bebek",
@@ -19,6 +20,7 @@
     "imgUrl": null,
     "EducationId": 3,
     "gender": "Male",
-    "dateOfBirth": "01-04-1999"
+    "dateOfBirth": "1999-04-01T00:00:00",
+    "profileDescription": ""
   }
 ]
