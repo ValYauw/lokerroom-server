@@ -3,6 +3,7 @@ const REST_API_SERVICE_URL = process.env.REST_API_SERVICE_URL;
 // const { dateScalar } = require('./scalars');
 
 const { getRequestedTopLevelFields } = require('./utils/graphql');
+const { throwApiError } = require('./utils/errorHandler');
 
 const resolvers = {
   // Date: dateScalar,
@@ -10,27 +11,47 @@ const resolvers = {
   Query: {
 
     categories: async () => {
-      const { data } = await axios.get(`${REST_API_SERVICE_URL}/categories`);
+      const response = await fetch(
+        `${REST_API_SERVICE_URL}/categories`
+      );
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
       return data;
     },
     educationLevels: async () => {
-      const { data } = await axios.get(`${REST_API_SERVICE_URL}/education-levels`);
+      const response = await fetch(
+        `${REST_API_SERVICE_URL}/education-levels`
+      );
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
       return data;
     },
     user: async (_, args) => {
       const { userId } = args;
-      const { data } = await axios.get(`${REST_API_SERVICE_URL}/users/${userId || 0}`);
+      const response = await fetch(
+        `${REST_API_SERVICE_URL}/users/${userId || 0}`
+      );
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
       return data;
     },
     users: async (_, args) => {
       const { pageNumber } = args;
-      const { data: fetched } = await axios.get(`${REST_API_SERVICE_URL}/users?p=${pageNumber || 1}`);
+      const response = await fetch(
+        `${REST_API_SERVICE_URL}/users?p=${pageNumber || 1}`
+      );
+      const fetched = await response.json();
+      if (!response.ok) throwApiError(fetched);
       const { numPages, data } = fetched;
       return data;
     },
     jobPosting: async (_, args) => {
       const { jobPostingId } = args;
-      const { data } = await axios.get(`${REST_API_SERVICE_URL}/job-postings/${jobPostingId}`);
+      const response = await fetch(
+        `${REST_API_SERVICE_URL}/job-postings/${jobPostingId}`
+      );
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
       return data;
     },
     jobPostings: async (_, args) => {
@@ -42,7 +63,11 @@ const resolvers = {
       if (educationId) query += `&education=${educationId}`;
       if (location) query += `&location=${location}`;
       if (isUrgent) query += `&isUrgent=true`;
-      const { data: fetched } = await axios.get(`${REST_API_SERVICE_URL}/job-postings${query}`);
+      const response = await fetch(
+        `${REST_API_SERVICE_URL}/job-postings${query}`
+      );
+      const fetched = await response.json();
+      if (!response.ok) throwApiError(fetched);
       const { numPages, data } = fetched;
       return data;
     },
@@ -67,27 +92,220 @@ const resolvers = {
         }
       }
 
-      const [ { data }, ...arr] = await Promise.all(fetchCalls.map(route => {
-        console.log(`${REST_API_SERVICE_URL}${route}`);
-        return axios.get(`${REST_API_SERVICE_URL}${route}`, {
-          headers: { access_token }
-        })
-      }));
-      
-      for (let res of arr) {
-        switch (res.request.path) {
-          case '/user/job-postings':
-            data.postedJobs = res.data;
-            break;
-          case '/user/job-applications':
-            data.appliedJobs = res.data;
-            break;
-          case '/user/reviews':
-            data.receivedReviews = res.data;
-            break;
+      try {
+
+        const [ { data }, ...arr] = await Promise.all(fetchCalls.map(route => {
+          return axios.get(`${REST_API_SERVICE_URL}${route}`, {
+            headers: { access_token }
+          })
+        }));
+        
+        for (let res of arr) {
+          switch (res.request.path) {
+            case '/user/job-postings':
+              data.postedJobs = res.data;
+              break;
+            case '/user/job-applications':
+              data.appliedJobs = res.data;
+              break;
+            case '/user/reviews':
+              data.receivedReviews = res.data;
+              break;
+          }
         }
+        return data;
+      } catch (err) {
+        throwApiError(err);
       }
-      
+
+    }
+
+  },
+
+  Mutation: {
+
+    async register(_, args) {
+      const { registerDetails } = args;
+      const response = await fetch(`${REST_API_SERVICE_URL}/register`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(registerDetails)
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async login(_, args) {
+      const { loginCredentials } = args;
+      const response = await fetch(`${REST_API_SERVICE_URL}/login`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(loginCredentials)
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async editUserDetails(_, args, context) {
+      const { userDetails } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/user`, {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+          access_token: access_token
+        },
+        body: JSON.stringify(userDetails)
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async addNewJobPosting(_, args, context) {
+      const { jobPosting } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-postings`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          access_token: access_token
+        },
+        body: JSON.stringify(jobPosting)
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async editJobPosting(_, args, context) {
+      const { jobPostingId, jobPosting } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-postings/${jobPostingId}`, {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json",
+          access_token: access_token
+        },
+        body: JSON.stringify(jobPosting)
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async changeJobPostingStatus(_, args, context) {
+      const { jobPostingId, jobPostingStatus } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-postings/${jobPostingId}`, {
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+          access_token: access_token
+        },
+        body: JSON.stringify({
+          status: jobPostingStatus
+        })
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async applyToJob(_, args, context) {
+      const { jobPostingId } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-postings/${jobPostingId}/application`, {
+        method: 'POST',
+        headers: {
+          access_token: access_token
+        }
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async acceptJobApplication(_, args, context) {
+      const { jobApplicationId } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-applications/${jobApplicationId}/accept`, {
+        method: 'PATCH',
+        headers: {
+          access_token: access_token
+        }
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async rejectJobApplication(_, args, context) {
+      const { jobApplicationId } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-applications/${jobApplicationId}/reject`, {
+        method: 'PATCH',
+        headers: {
+          access_token: access_token
+        }
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async startEmploymentForJobApplication(_, args, context) {
+      const { jobApplicationId } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-applications/${jobApplicationId}/start`, {
+        method: 'PATCH',
+        headers: {
+          access_token: access_token
+        }
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async endEmploymentForJobApplication(_, args, context) {
+      const { jobApplicationId } = args;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/job-applications/${jobApplicationId}/terminate`, {
+        method: 'PATCH',
+        headers: {
+          access_token: access_token
+        }
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
+
+    async addReview(_, args, context) {
+      const { newReview } = args;
+      const { userId, jobPostingId, content, rating } = newReview;
+      const { access_token } = context;
+      const response = await fetch(`${REST_API_SERVICE_URL}/users/${userId}/review`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          access_token: access_token
+        },
+        body: JSON.stringify({
+          jobPostingId: jobPostingId,
+          content: content,
+          rating: rating
+        })
+      })
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
       return data;
     }
 

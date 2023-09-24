@@ -110,15 +110,11 @@ const typeDefs = `#graphql
     educationId: Int
     gender: Gender
     dateOfBirth: String
-    profileDescription: String
   }
   input userDetails {
-    name: String
     address: String
     imgUrl: String
     educationId: Int
-    gender: Gender
-    dateOfBirth: String
     profileDescription: String
   }
   input newJobPosting {
@@ -160,6 +156,21 @@ const typeDefs = `#graphql
       pageNumber: Int
     ): [JobPosting]
 
+  }
+
+  type Mutation {
+    register(registerDetails: registerDetails): Response
+    login(loginCredentials: loginCredentials): Response
+    editUserDetails(userDetails: userDetails): Response
+    addNewJobPosting(jobPosting: newJobPosting): Response
+    editJobPosting(jobPostingId: Int!, jobPosting: newJobPosting): Response
+    changeJobPostingStatus(jobPostingId: Int!, jobPostingStatus: JobPostingStatus!): Response
+    applyToJob(jobPostingId: Int!): Response
+    acceptJobApplication(jobApplicationId: Int!): Response
+    rejectJobApplication(jobApplicationId: Int!): Response
+    startEmploymentForJobApplication(jobApplicationId: Int!): Response
+    endEmploymentForJobApplication(jobApplicationId: Int!): Response
+    addReview(newReview: newReview): Response
   }
   
 `;
