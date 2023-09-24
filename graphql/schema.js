@@ -34,10 +34,10 @@ const typeDefs = `#graphql
     email: String
     address: String
     imgUrl: String
-    educationLevel: EducationLevel
     gender: Gender
-    dateOfBirth: Date
+    dateOfBirth: String
     profileDescription: String
+    educationLevel: EducationLevel
     receivedReviews: [Review]
   }
   type Me {
@@ -47,10 +47,10 @@ const typeDefs = `#graphql
     email: String
     address: String
     imgUrl: String
-    educationLevel: EducationLevel
     gender: Gender
-    dateOfBirth: Date
+    dateOfBirth: String
     profileDescription: String
+    educationLevel: EducationLevel
     appliedJobs: [JobApplication]
     postedJobs: [JobPosting]
     receivedReviews: [Review]
@@ -60,8 +60,8 @@ const typeDefs = `#graphql
     jobPosting: JobPosting
     applicationStatus: ApplicationStatus
     isEmployed: Boolean
-    startDateOfEmployment: Date
-    endDateOfEmployment: Date
+    startDateOfEmployment: String
+    endDateOfEmployment: String
   }
   type JobPosting {
     id: Int
@@ -109,7 +109,7 @@ const typeDefs = `#graphql
     address: String
     educationId: Int
     gender: Gender
-    dateOfBirth: Date
+    dateOfBirth: String
     profileDescription: String
   }
   input userDetails {
@@ -118,7 +118,7 @@ const typeDefs = `#graphql
     imgUrl: String
     educationId: Int
     gender: Gender
-    dateOfBirth: Date
+    dateOfBirth: String
     profileDescription: String
   }
   input newJobPosting {
@@ -142,32 +142,26 @@ const typeDefs = `#graphql
 
   # Schema Query dan Mutation
   type Query {
+
+    categories: [Category]
+    educationLevels: [EducationLevel]
+
     me: Me
-    user(id: Int!): User
+    user(userId: Int!): User
     users(pageNumber: Int): [User]
-    jobPostingById(id: Int!): JobPosting
+    jobPosting(jobPostingId: Int!): JobPosting
     jobPostings(
       gender: Gender, 
       maxAge: Int, 
       categoryId: Int,
-      maxEducation: EducationLevel, 
+      educationId: Int, 
       location: String, 
       isUrgent: Boolean,
       pageNumber: Int
     ): [JobPosting]
+
   }
-  type Mutation {
-    register(registerDetails: registerDetails): Response
-    login(loginCredentials: loginCredentials): Response
-    editUserDetails(userDetails: userDetails): Response
-    addNewJobPosting(newJobPosting: newJobPosting): JobPosting
-    editJobPosting(newJobPosting: newJobPosting): JobPosting
-    applyToJob(id: Int): JobApplication
-    acceptJobApplication(id: Int): Response
-    rejectJobApplication(id: Int): Response
-    endEmploymentForJobApplication(id: Int): Response
-    addReview(newReview: newReview): Review
-  }
+  
 `;
 
-export default typeDefs;
+module.exports = typeDefs;

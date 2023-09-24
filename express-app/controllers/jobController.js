@@ -117,7 +117,7 @@ class Controller {
             model: User,
             as: 'author',
             attributes: {
-              exclude: ['createdAt', 'updatedAt']
+              exclude: ['password', 'createdAt', 'updatedAt']
             }
           },
           {
