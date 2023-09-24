@@ -86,6 +86,14 @@ const typeDefs = `#graphql
     content: String
     rating: Int
   }
+  type PageOfUsers {
+    numPages: Int
+    data: [User]
+  }
+  type PageOfJobPostings {
+    numPages: Int
+    data: [JobPosting]
+  }
 
 
   # Response setelah mutation
@@ -144,7 +152,7 @@ const typeDefs = `#graphql
 
     me: Me
     user(userId: Int!): User
-    users(pageNumber: Int): [User]
+    users(pageNumber: Int): PageOfUsers
     jobPosting(jobPostingId: Int!): JobPosting
     jobPostings(
       gender: Gender, 
@@ -154,7 +162,7 @@ const typeDefs = `#graphql
       location: String, 
       isUrgent: Boolean,
       pageNumber: Int
-    ): [JobPosting]
+    ): PageOfJobPostings
 
   }
 

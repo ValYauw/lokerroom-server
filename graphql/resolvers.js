@@ -1,6 +1,7 @@
 const axios = require('axios');
 const REST_API_SERVICE_URL = process.env.REST_API_SERVICE_URL;
 // const { dateScalar } = require('./scalars');
+const redis = require('../config/redisConnection');
 
 const { getRequestedTopLevelFields } = require('./utils/graphql');
 const { throwApiError } = require('./utils/errorHandler');
@@ -11,20 +12,34 @@ const resolvers = {
   Query: {
 
     categories: async () => {
-      const response = await fetch(
-        `${REST_API_SERVICE_URL}/categories`
-      );
-      const data = await response.json();
-      if (!response.ok) throwApiError(data);
-      return data;
+      const cache = await redis.get("categories");
+      if (cache) {
+        const categories = JSON.parse(cache);
+        return categories;
+      } else {
+        const response = await fetch(
+          `${REST_API_SERVICE_URL}/categories`
+        );
+        const data = await response.json();
+        if (!response.ok) throwApiError(data);
+        await redis.set("categories", JSON.stringify(data));
+        return data;
+      }
     },
     educationLevels: async () => {
-      const response = await fetch(
-        `${REST_API_SERVICE_URL}/education-levels`
-      );
-      const data = await response.json();
-      if (!response.ok) throwApiError(data);
-      return data;
+      const cache = await redis.get("educationLevels");
+      if (cache) {
+        const educationLevels = JSON.parse(cache);
+        return educationLevels;
+      } else {
+        const response = await fetch(
+          `${REST_API_SERVICE_URL}/education-levels`
+        );
+        const data = await response.json();
+        if (!response.ok) throwApiError(data);
+        await redis.set("educationLevels", JSON.stringify(data));
+        return data;
+      }
     },
     user: async (_, args) => {
       const { userId } = args;
@@ -37,13 +52,20 @@ const resolvers = {
     },
     users: async (_, args) => {
       const { pageNumber } = args;
-      const response = await fetch(
-        `${REST_API_SERVICE_URL}/users?p=${pageNumber || 1}`
-      );
-      const fetched = await response.json();
-      if (!response.ok) throwApiError(fetched);
-      const { numPages, data } = fetched;
-      return data;
+      let redisTag = `users?p=${pageNumber || 1}`;
+      const cache = await redis.get(redisTag);
+      if (cache) {
+        const users = JSON.parse(cache);
+        return users;
+      } else {
+        const response = await fetch(
+          `${REST_API_SERVICE_URL}/${redisTag}`
+        );
+        const data = await response.json();
+        if (!response.ok) throwApiError(data);
+        await redis.set(redisTag, JSON.stringify(data));
+        return data;
+      }
     },
     jobPosting: async (_, args) => {
       const { jobPostingId } = args;
@@ -63,13 +85,21 @@ const resolvers = {
       if (educationId) query += `&education=${educationId}`;
       if (location) query += `&location=${location}`;
       if (isUrgent) query += `&isUrgent=true`;
-      const response = await fetch(
-        `${REST_API_SERVICE_URL}/job-postings${query}`
-      );
-      const fetched = await response.json();
-      if (!response.ok) throwApiError(fetched);
-      const { numPages, data } = fetched;
-      return data;
+
+      let redisTag = `job-postings${query}`;
+      const cache = await redis.get(redisTag);
+      if (cache) {
+        const jobPostings = JSON.parse(cache);
+        return jobPostings;
+      } else {
+        const response = await fetch(
+          `${REST_API_SERVICE_URL}/${redisTag}`
+        );
+        const data = await response.json();
+        if (!response.ok) throwApiError(data);
+        await redis.set(redisTag, JSON.stringify(data));
+        return data;
+      }
     },
   
     me: async (_, args, context, info) => {
@@ -165,6 +195,7 @@ const resolvers = {
       })
       const data = await response.json();
       if (!response.ok) throwApiError(data);
+      await redis.flushall();
       return data;
     },
 
@@ -181,6 +212,7 @@ const resolvers = {
       })
       const data = await response.json();
       if (!response.ok) throwApiError(data);
+      await redis.flushall();
       return data;
     },
 
@@ -197,6 +229,7 @@ const resolvers = {
       })
       const data = await response.json();
       if (!response.ok) throwApiError(data);
+      await redis.flushall();
       return data;
     },
 
@@ -215,6 +248,7 @@ const resolvers = {
       })
       const data = await response.json();
       if (!response.ok) throwApiError(data);
+      await redis.flushall();
       return data;
     },
 
@@ -306,6 +340,7 @@ const resolvers = {
       })
       const data = await response.json();
       if (!response.ok) throwApiError(data);
+      await redis.flushall();
       return data;
     }
 
