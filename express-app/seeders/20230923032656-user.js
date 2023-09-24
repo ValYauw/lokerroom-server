@@ -11,7 +11,8 @@ module.exports = {
       const createdAt = new Date();
       const updatedAt = new Date();
       const password = encrypt(el.password);
-      return { ...el, password, createdAt, updatedAt }
+      const dateOfBirth = new Date(el.dateOfBirth);
+      return { ...el, password, dateOfBirth, createdAt, updatedAt }
     });
     await queryInterface.bulkInsert('Users', seedData, {});
   },

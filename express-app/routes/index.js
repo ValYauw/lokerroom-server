@@ -4,16 +4,23 @@ const JobController = require('../controllers/jobController');
 const router = require('express').Router();
 
 const authentication = require('../middleware/authentication');
-const authorization = require('../middleware/authorization');
+const { authorization, authorizeJobApplicationPrivilege } = require('../middleware/authorization');
 
 router.get('/', (req, res) => {
   res.send('Welcome to the API entrypoint');
 });
+
 router.post('/login', UserController.login);
 router.post('/register', UserController.register);
+
 router.get('/users', UserController.getUsers);
 router.get('/users/:id', UserController.getUserById);
+
+router.get('/categories', JobController.getCategories);
+router.get('/education-levels', JobController.getEducationLevels);
+
 router.get('/job-postings', JobController.getJobPostings);
+router.get('/job-postings/:id', JobController.getJobPostingById);
 
 router.use(authentication);
 
@@ -28,7 +35,10 @@ router.put('/job-postings/:id', authorization, JobController.updateJobPostingDet
 router.patch('/job-postings/:id', authorization, JobController.updateJobPostingStatus);
 
 router.post('/job-postings/:id/application', JobController.applyToJob);
-router.patch('/job-postings/:id/application/:appId', authorization, JobController.processJobApplication);
+router.patch('/job-applications/:id/accept', authorizeJobApplicationPrivilege, JobController.acceptJobApplication);
+router.patch('/job-applications/:id/reject', authorizeJobApplicationPrivilege, JobController.rejectJobApplication);
+router.patch('/job-applications/:id/start', authorizeJobApplicationPrivilege, JobController.startJob);
+router.patch('/job-applications/:id/terminate', authorizeJobApplicationPrivilege, JobController.terminateJob);
 
 router.post('/users/:id/review', UserController.addReview);
 

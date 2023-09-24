@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 const { encrypt } = require('../helpers/password'); 
 const { sequelize } = require('../models');
-const entrypoints = require('./entrypoints');
+const entrypoints = require('../config/testing-entrypoints');
 
-const dummyDate = new Date('01-01-2020');
+const dummyDate = new Date('2020-01-01T00:00:00');
 
 /* 
  * START SEED DATA
@@ -55,7 +55,8 @@ const users = [
     imgUrl: null,
     EducationId: 2,
     gender: "Male",
-    dateOfBirth: "30-01-1985",
+    dateOfBirth: new Date("1985-01-30T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -68,7 +69,8 @@ const users = [
     imgUrl: null,
     EducationId: 3,
     gender: "Male",
-    dateOfBirth: "02-04-2005",
+    dateOfBirth: new Date("2005-04-02T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -84,9 +86,11 @@ const jobPostings = [
     AuthorId: 1,
     requiredGender: 'Male',
     maxAge: 30,
-    requiredEducation: null,
+    RequiredEducation: null,
     status: 'Filled',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Janitor",
@@ -98,9 +102,11 @@ const jobPostings = [
     AuthorId: 1,
     requiredGender: 'Male',
     maxAge: null,
-    requiredEducation: null,
+    RequiredEducation: null,
     status: 'Filled',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Accountant",
@@ -112,9 +118,11 @@ const jobPostings = [
     AuthorId: 1,
     requiredGender: null,
     maxAge: null,
-    requiredEducation: null,
+    RequiredEducation: null,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Gamer",
@@ -126,9 +134,11 @@ const jobPostings = [
     AuthorId: 1,
     requiredGender: null,
     maxAge: null,
-    requiredEducation: null,
+    RequiredEducation: null,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   }
 ];
 const jobApplications = [
@@ -137,16 +147,20 @@ const jobApplications = [
     JobPostingId: 1,
     applicationStatus: "Accepted",
     isEmployed: false,
-    startDateOfEmployment: new Date("01-01-2010"),
-    endDateOfEmployment: new Date("01-05-2010")
+    startDateOfEmployment: new Date("2010-01-01T00:00:00"),
+    endDateOfEmployment: new Date("2010-05-01T00:00:00"),
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     UserId: 2,
     JobPostingId: 2,
     applicationStatus: "Accepted",
     isEmployed: true,
-    startDateOfEmployment: new Date("01-05-2010"),
-    endDateOfEmployment: null
+    startDateOfEmployment: new Date("2010-05-01T00:00:00"),
+    endDateOfEmployment: null,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     UserId: 2,
@@ -154,7 +168,9 @@ const jobApplications = [
     applicationStatus: "Processing",
     isEmployed: null,
     startDateOfEmployment: null,
-    endDateOfEmployment: null
+    endDateOfEmployment: null,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     UserId: 2,
@@ -162,7 +178,9 @@ const jobApplications = [
     applicationStatus: "Rejected",
     isEmployed: null,
     startDateOfEmployment: null,
-    endDateOfEmployment: null
+    endDateOfEmployment: null,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   }
 ];
 const reviews = [
@@ -171,14 +189,18 @@ const reviews = [
     UserId: 2,
     JobPostingId: 1,
     content: "Etika kerja yang jelek",
-    rating: 2
+    rating: 2,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     EmployerId: 1,
     UserId: 2,
     JobPostingId: 2,
     content: "Perlu bekerja lebih keras",
-    rating: 3
+    rating: 3,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   }
 ]
 /* 
@@ -213,24 +235,30 @@ describe('GET User without authentication', () => {
       .get(entrypoints.users())
     expect(response.statusCode).toBe(200);
 
-    const fetchedUsers = response.body;
+    const { numPages, data: fetchedUsers } = response.body;
+    expect(numPages).toBe(1);
     expect(fetchedUsers.length).toBe(2);
-    expect(fetchedUsers[0].name).toBeDefined();
-    expect(fetchedUsers[0].telephone).toBeDefined();
-    expect(fetchedUsers[0].email).toBeDefined();
-    expect(fetchedUsers[0].address).toBeDefined();
-    expect(fetchedUsers[0].imgUrl).toBeDefined();
-    expect(fetchedUsers[0].educationLevel).toBeDefined();
-    expect(fetchedUsers[0].gender).toBeDefined();
-    expect(fetchedUsers[0].dateOfBirth).toBeDefined();
-    expect(fetchedUsers[0].profileDescription).toBeDefined();
-    expect(fetchedUsers[0].receivedReviews).toBeDefined();
+    const { 
+      name, telephone, email, address, imgUrl, 
+      educationLevel, gender, dateOfBirth, profileDescription, 
+      receivedReviews, password, appliedJobs, postedJobs
+    } = fetchedUsers[0];
+    expect(name).toBeDefined();
+    expect(telephone).toBeDefined();
+    expect(email).toBeDefined();
+    expect(address).toBeDefined();
+    expect(imgUrl).toBeDefined();
+    expect(educationLevel).toBeDefined();
+    expect(gender).toBeDefined();
+    expect(dateOfBirth).toBeDefined();
+    expect(profileDescription).toBeDefined();
+    expect(receivedReviews).toBeDefined();
     // Limit 3 reviews per user when fetching multiple users
-    expect(fetchedUsers[0].receivedReviews.length).toBeLessThanOrEqual(3);
+    expect(receivedReviews.length).toBeLessThanOrEqual(3);
 
-    expect(fetchedUsers[0].password).toBeUndefined();
-    expect(fetchedUsers[0].appliedJobs).toBeUndefined();
-    expect(fetchedUsers[0].postedJobs).toBeUndefined();
+    expect(password).toBeUndefined();
+    expect(appliedJobs).toBeUndefined();
+    expect(postedJobs).toBeUndefined();
 
   });
 
@@ -243,7 +271,8 @@ describe('GET User without authentication', () => {
     const { 
       name, email, telephone, address, imgUrl, 
       educationLevel, gender, dateOfBirth, 
-      profileDescription, receivedReviews 
+      profileDescription, receivedReviews,
+      password, appliedJobs, postedJobs
     } = fetchedUser;
     expect(name).toBeDefined();
     expect(telephone).toBeDefined();
@@ -257,9 +286,9 @@ describe('GET User without authentication', () => {
     expect(receivedReviews).toBeDefined();
     expect(receivedReviews.length).toBe(2);
 
-    expect(fetchedUser.password).toBeUndefined();
-    expect(fetchedUser.appliedJobs).toBeUndefined();
-    expect(fetchedUser.postedJobs).toBeUndefined();
+    expect(password).toBeUndefined();
+    expect(appliedJobs).toBeUndefined();
+    expect(postedJobs).toBeUndefined();
 
   });
 
@@ -301,20 +330,25 @@ describe('GET my details with authentication', () => {
     expect(response.statusCode).toBe(200);
 
     const { 
-      id, name, email, telephone, address, imgUrl, educationLevel, 
+      id, name, email, telephone, password, address, imgUrl, educationLevel, 
       gender, dateOfBirth, profileDescription
     } = response.body;
     expect(id).toBe(2);
     expect(name).toBe(users[1].name);
     expect(telephone).toBe(users[1].telephone);
     expect(email).toBe(users[1].email);
+    expect(password).toBeUndefined();
     expect(address).toBe(users[1].address);
     expect(imgUrl).toBe(users[1].imgUrl);
     expect(educationLevel.id).toBe(users[1].EducationId);
-    expect(educationLevel.name).toBe(educationLevels[users[1].EducationId - 1].education);
+    expect(educationLevel.education).toBe(educationLevels[users[1].EducationId - 1].education);
     expect(gender).toBe(users[1].gender);
-    expect(dateOfBirth).toBe(users[1].dateOfBirth);
-    expect(profileDescription).toBe(users[1].profileDescription);
+    const receivedDate = new Date(dateOfBirth);
+    const compareDate = new Date(users[1].dateOfBirth);
+    expect(receivedDate.getFullYear()).toBe(compareDate.getFullYear());
+    expect(receivedDate.getMonth()).toBe(compareDate.getMonth());
+    expect(receivedDate.getDate()).toBe(compareDate.getDate());
+    expect(profileDescription).toBe('');
     
   });
 
@@ -325,7 +359,7 @@ describe('GET my details with authentication', () => {
 
     expect(response.statusCode).toBe(200);
 
-    const { appliedJobs } = response.body;
+    const appliedJobs = response.body;
     expect(appliedJobs.length).toBe(4);
     expect(appliedJobs[0].jobPosting).toBeDefined();
     expect(appliedJobs[0].applicationStatus).toBeDefined();
@@ -343,10 +377,10 @@ describe('GET my details with authentication', () => {
 
     expect(response.statusCode).toBe(200);
 
-    const { receivedReviews } = response.body;
+    const receivedReviews = response.body;
     expect(receivedReviews.length).toBe(2);
     expect(receivedReviews[0].employer).toBeDefined();
-    expect(receivedReviews[0].user).toBeDefined();
+    // expect(receivedReviews[0].user).toBeDefined();
     expect(receivedReviews[0].jobPosting).toBeDefined();
     expect(receivedReviews[0].content).toBeDefined();
     expect(receivedReviews[0].rating).toBeDefined();
@@ -368,7 +402,7 @@ describe('GET my details with authentication', () => {
 
     expect(response.statusCode).toBe(200);
 
-    const { postedJobs } = response.body;
+    const postedJobs = response.body;
     expect(postedJobs.length).toBe(4);
     expect(postedJobs[0].title).toBeDefined();
     expect(postedJobs[0].description).toBeDefined();

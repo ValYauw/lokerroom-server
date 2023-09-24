@@ -26,19 +26,27 @@ const entrypoints = {
     return `/job-postings?p=${pageNumber}${query}`
   },
   jobPosting: (id) => `/job-postings/${id}`,
+  categories: '/categories',
+  educationLevels: '/education-levels',
   
   // POST
   addJobPosting: '/job-postings',
   
   // PUT
-  editJobPosting: (id) => `/job-posting/${id}`,
+  editJobPosting: (id) => `/job-postings/${id}`,
 
-  // POST, PATCH
+  // POST
   applyToJob: (id) => `/job-postings/${id}/application`,
+
+  // PATCH
+  acceptJobApplication: (id) => `/job-applications/${id}/accept`,
+  rejectJobApplication: (id) => `/job-applications/${id}/reject`,
+  startJob: (id) => `/job-applications/${id}/start`,
+  terminateJob: (id) => `/job-applications/${id}/terminate`,
 
   // POST
   reviewUser: (id) => `/users/${id}/review`,
 
 }
 
-export default entrypoints;
+module.exports = entrypoints;

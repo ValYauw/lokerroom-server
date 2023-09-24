@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 const { encrypt } = require('../helpers/password'); 
 const { sequelize } = require('../models');
-const entrypoints = require('./entrypoints');
+const entrypoints = require('../config/testing-entrypoints');
 
-const dummyDate = new Date('01-01-2020');
+const dummyDate = new Date('2020-01-01T00:00:00');
 
 /* 
  * START SEED DATA
@@ -54,7 +54,8 @@ const users = [
     imgUrl: null,
     EducationId: 2,
     gender: "Male",
-    dateOfBirth: "30-01-1985",
+    dateOfBirth: new Date("1985-01-30T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -67,7 +68,8 @@ const users = [
     imgUrl: null,
     EducationId: 3,
     gender: "Male",
-    dateOfBirth: "02-04-2005",
+    dateOfBirth: new Date("2005-04-02T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -182,11 +184,13 @@ describe('POST Job Application', () => {
     expect(response.statusCode).toBe(201);
 
     const fetchResponse = await request(app)
-      .get(entrypoints.jobApplications(1));
+      .get(entrypoints.myJobApplications)
+      .set('access_token', access_token);
     expect(fetchResponse.statusCode).toBe(200);
+    const jobApplication = fetchResponse.body[0];
     const {
       jobPosting, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment
-    } = fetchResponse.body;
+    } = jobApplication;
     expect(jobPosting.id).toBe(1);
     expect(applicationStatus).toBe("Processing");
     expect(isEmployed).toBeNull();
@@ -206,7 +210,7 @@ describe('POST Job Application', () => {
   it('should fail to post a job application without authentication', async () => {
     const response = await request(app)
       .post(entrypoints.applyToJob(2));
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(401);
     expect(response.body.message).toBeDefined();
   });
 

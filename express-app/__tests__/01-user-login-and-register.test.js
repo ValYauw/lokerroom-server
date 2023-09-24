@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 const { encrypt } = require('../helpers/password'); 
 const { sequelize } = require('../models');
-const entrypoints = require('./entrypoints');
+const entrypoints = require('../config/testing-entrypoints');
 
-const dummyDate = new Date('01-01-2020');
+const dummyDate = new Date('2020-01-01T00:00:00');
 
 /* 
  * START SEED DATA
@@ -51,8 +51,8 @@ const users = [
     imgUrl: null,
     EducationId: 1,
     gender: "Male",
-    dateOfBirth: "20-12-2001",
-    profileDescription: null,
+    dateOfBirth: new Date("2001-12-20T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -65,8 +65,8 @@ const users = [
     imgUrl: "https://dummyimage.com/100x100/000/fff",
     EducationId: 1,
     gender: "Male",
-    dateOfBirth: "01-03-1995",
-    profileDescription: null,
+    dateOfBirth: new Date("1995-03-01T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
@@ -79,7 +79,7 @@ const users = [
     imgUrl: null,
     EducationId: 2,
     gender: "Female",
-    dateOfBirth: "05-10-1999",
+    dateOfBirth: new Date("1999-10-05T00:00:00"),
     profileDescription: null,
     createdAt: dummyDate,
     updatedAt: dummyDate
@@ -224,7 +224,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(201);
     const { message } = response.body;
@@ -241,7 +241,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 2,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(201);
     const { message } = response.body;
@@ -268,12 +268,12 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
     expect(message).toBeDefined();
-    expect(message).toBe("Email/telephone is required");
+    expect(message).toBe("Phone number is required");
   });
 
   it('should fail to register (name is empty)', async () => {
@@ -287,7 +287,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -306,12 +306,31 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
     expect(message).toBeDefined();
     expect(message).toBe("Password is required");
+  });
+
+  it('should fail to register (password is too short)', async () => {
+    const response = await request(app)
+      .post(entrypoints.register)
+      .send({
+        name: "Acep",
+        telephone: "0815421099",
+        email: "",
+        password: "a",
+        address: "Depok",
+        educationId: 1,
+        gender: "Male",
+        dateOfBirth: "2000-01-15",
+      })
+    expect(response.statusCode).toBe(400);
+    const { message } = response.body;
+    expect(message).toBeDefined();
+    expect(message).toBe("Password must be at least 5 characters long");
   });
 
   it('should fail to register (address is empty)', async () => {
@@ -325,7 +344,7 @@ describe('POST User register', () => {
         address: "",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -344,7 +363,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "",
-        dateOfBirth: "15-01-2000",
+        dateOfBirth: "2000-01-15",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -381,7 +400,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "01-03-2001",
+        dateOfBirth: "2001-03-10",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;
@@ -400,7 +419,7 @@ describe('POST User register', () => {
         address: "Depok",
         educationId: 1,
         gender: "Male",
-        dateOfBirth: "01-03-2001",
+        dateOfBirth: "2001-03-10",
       })
     expect(response.statusCode).toBe(400);
     const { message } = response.body;

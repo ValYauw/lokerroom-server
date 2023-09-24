@@ -9,7 +9,9 @@ module.exports = {
     const seedData = rawSeedData.map(el => {
       const createdAt = new Date();
       const updatedAt = new Date();
-      return { ...el, createdAt, updatedAt }
+      const startDateOfEmployment = el.startDateOfEmployment ? new Date(el.startDateOfEmployment) : null;
+      const endDateOfEmployment = el.endDateOfEmployment ? new Date(el.endDateOfEmployment) : null;
+      return { ...el, startDateOfEmployment, endDateOfEmployment, createdAt, updatedAt }
     });
     await queryInterface.bulkInsert('JobApplications', seedData, {});
   },

@@ -2,9 +2,11 @@ const request = require('supertest');
 const app = require('../app');
 const { encrypt } = require('../helpers/password'); 
 const { sequelize } = require('../models');
-const entrypoints = require('./entrypoints');
+const entrypoints = require('../config/testing-entrypoints');
 
-const dummyDate = new Date('01-01-2020');
+const { NUM_JOB_POSTINGS_PER_PAGE } = require('../config/pagination');
+
+const dummyDate = new Date('2020-01-01T00:00:00');
 
 /* 
  * START SEED DATA
@@ -57,7 +59,8 @@ const users = [
     imgUrl: null,
     EducationId: 2,
     gender: "Male",
-    dateOfBirth: "30-01-1985",
+    dateOfBirth: new Date("1985-01-30T00:00:00"),
+    profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
   }
@@ -75,7 +78,9 @@ const jobPostings = [
     maxAge: 30,
     RequiredEducation: 1,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "ART",
@@ -89,7 +94,9 @@ const jobPostings = [
     maxAge: null,
     RequiredEducation: 1,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Koki",
@@ -103,7 +110,9 @@ const jobPostings = [
     maxAge: null,
     RequiredEducation: 2,
     status: 'Active',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Onsite drill team",
@@ -117,7 +126,9 @@ const jobPostings = [
     maxAge: 25,
     RequiredEducation: 3,
     status: 'Active',
-    isUrgent: true
+    isUrgent: true,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
   {
     title: "Gamer",
@@ -131,7 +142,9 @@ const jobPostings = [
     maxAge: null,
     RequiredEducation: null,
     status: 'Inactive',
-    isUrgent: false
+    isUrgent: false,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   },
 ];
 /* 
@@ -164,8 +177,9 @@ describe('GET Multiple Job Postings', () => {
       .get(entrypoints.jobPostings())
     expect(response.statusCode).toBe(200);
 
-    const fetchedPostings = response.body;
-    expect(fetchedPostings.length).toBe(2);
+    const { numPages, data: fetchedPostings } = response.body;
+    expect(numPages).toBe(1);
+    expect(fetchedPostings.length).toBe(Math.min(NUM_JOB_POSTINGS_PER_PAGE, 5));
     const { 
       title, description, address, category, author,  
       minSalary, maxSalary, requiredGender, maxAge, requiredEducation, 
@@ -189,7 +203,7 @@ describe('GET Multiple Job Postings', () => {
     const response = await request(app)
       .get(entrypoints.jobPostings({ requiredGender: 'Male' }));
     expect(response.statusCode).toBe(200);
-    const jobPostings = response.body;
+    const { data: jobPostings } = response.body;
     const jobPostingsGenders = jobPostings.map(el => el.requiredGender);
     expect(jobPostingsGenders.every(el => el === 'Male')).toBe(true);
   });
@@ -198,7 +212,7 @@ describe('GET Multiple Job Postings', () => {
     const response = await request(app)
       .get(entrypoints.jobPostings({ maxAge: 30 }));
     expect(response.statusCode).toBe(200);
-    const jobPostings = response.body;
+    const { data: jobPostings } = response.body;
     const jobPostingsAgeRequirements = jobPostings.map(el => el.maxAge);
     expect(jobPostingsAgeRequirements.every(el => el === null || el <= 30)).toBe(true);
   });
@@ -207,7 +221,7 @@ describe('GET Multiple Job Postings', () => {
     const response = await request(app)
       .get(entrypoints.jobPostings({ categoryId: 1 }));
     expect(response.statusCode).toBe(200);
-    const jobPostings = response.body;
+    const { data: jobPostings } = response.body;
     const jobPostingsCategories = jobPostings.map(el => el.category.id);
     expect(jobPostingsCategories.every(el => el === 1)).toBe(true);
   });
@@ -216,7 +230,7 @@ describe('GET Multiple Job Postings', () => {
     const response = await request(app)
       .get(entrypoints.jobPostings({ education: 2 }));
     expect(response.statusCode).toBe(200);
-    const jobPostings = response.body;
+    const { data: jobPostings } = response.body;
     const jobPostingsEducations = jobPostings.map(el => el.requiredEducation);
     expect(jobPostingsEducations.every(el => el === null || el.id === 1 || el.id === 2)).toBe(true);
   });
@@ -225,8 +239,8 @@ describe('GET Multiple Job Postings', () => {
     const response = await request(app)
       .get(entrypoints.jobPostings({ location: 'Jakarta' }));
     expect(response.statusCode).toBe(200);
-    const jobPostings = response.body;
-    const jobPostingsLocations = jobPostings.map(el => el.location);
+    const { data: jobPostings } = response.body;
+    const jobPostingsLocations = jobPostings.map(el => el.address);
     expect(jobPostingsLocations.every(el => el === 'Jakarta')).toBe(true);
   });
 
@@ -234,15 +248,19 @@ describe('GET Multiple Job Postings', () => {
     const response = await request(app)
       .get(entrypoints.jobPostings({ isUrgent: 1 }));
     expect(response.statusCode).toBe(200);
-    const jobPostings = response.body;
+    const { data: jobPostings } = response.body;
     const jobPostingsUrgent = jobPostings.map(el => el.isUrgent);
-    expect(jobPostingsUrgent.every()).toBe(true);
+    expect(jobPostingsUrgent.every(el => el)).toBe(true);
   });
 
   it('should return with a status code of 200 even if no data is found', async () => {
     const response = await request(app)
       .get(entrypoints.jobPostings({ location: "Bogota" }));
     expect(response.statusCode).toBe(200);
+    const { numPages, data: jobPostings } = response.body;
+    expect(numPages).toBe(0);
+    expect(jobPostings).toBeDefined();
+    expect(jobPostings.length).toBe(0);
   });
 
 });
