@@ -249,18 +249,118 @@ class Controller {
     }
   }
 
-  static async processJobApplication(req, res, next) {
+  static async acceptJobApplication(req, res, next) {
     try {
-      const { id, appId } = req.params;
-      const { applicationStatus } = req.body;
-      if (!appId || isNaN(appId)) throw { name: 'NotFoundError' };
-      const jobApplication = await JobApplication.findByPk(appId);
-      if (!jobApplication) throw { name: 'NotFoundError' };
-      if (jobApplication.JobPostingId !== +id) throw { name: 'Forbidden' };
-      await JobApplication.update({ applicationStatus }, { id: appId });
+
+      const { id } = req.params;
+
+      if (req.jobApplication.applicationStatus !== 'Processing') {
+        throw { 
+          name: 'BadCredentials',
+          message: 'Cannot change status of a job application that is already accepted/rejected' 
+        }
+      }
+
+      await JobApplication.update({
+        applicationStatus: 'Accepted',
+        isEmployed: null,
+        startDateOfEmployment: null,
+        endDateOfEmployment: null
+      }, { 
+        where: { id, applicationStatus: 'Processing' } 
+      });
+
       res.status(200).json({
-        message: 'Successfully changed job application status'
-      })
+        message: 'Successfully accepted job application'
+      });
+
+    } catch(err) {
+      next(err);
+    }
+  }
+
+  static async rejectJobApplication(req, res, next) {
+    try {
+
+      const { id } = req.params;
+
+      if (req.jobApplication.applicationStatus !== 'Processing') {
+        throw { 
+          name: 'BadCredentials',
+          message: 'Cannot change status of a job application that is already accepted/rejected' 
+        }
+      }
+
+      await JobApplication.update({
+        applicationStatus: 'Rejected',
+        isEmployed: null,
+        startDateOfEmployment: null,
+        endDateOfEmployment: null
+      }, { 
+        where: { id, applicationStatus: 'Processing' } 
+      });
+
+      res.status(200).json({
+        message: 'Successfully rejected job application'
+      });
+
+    } catch(err) {
+      next(err);
+    }
+  }
+
+  static async startJob(req, res, next) {
+    try {
+
+      const { id } = req.params;
+
+      if (req.jobApplication.applicationStatus !== 'Accepted') {
+        throw { 
+          name: 'BadCredentials',
+          message: 'Cannot change status of a job if job applicant has not been accepted' 
+        }
+      }
+
+      await JobApplication.update({
+        isEmployed: true,
+        startDateOfEmployment: new Date(),
+        endDateOfEmployment: null
+      }, { 
+        where: { id, applicationStatus: 'Accepted' } 
+      });
+
+      res.status(200).json({
+        message: 'Successfully updated job status'
+      });
+      
+    } catch(err) {
+      next(err);
+    }
+  }
+
+  static async terminateJob(req, res, next) {
+    try {
+
+      const { id } = req.params;
+
+      if (req.jobApplication.applicationStatus !== 'Accepted') {
+        throw { 
+          name: 'BadCredentials',
+          message: 'Cannot change status of a job if job applicant has not been accepted' 
+        }
+      }
+
+      await JobApplication.update({
+        isEmployed: false,
+        endDateOfEmployment: new Date()
+      }, { 
+        where: { id, applicationStatus: 'Accepted' } 
+      });
+
+      res.status(200).json({
+        message: 'Successfully updated job status'
+      });
+
     } catch(err) {
       next(err);
     }

@@ -39,7 +39,10 @@ const entrypoints = {
   applyToJob: (id) => `/job-postings/${id}/application`,
 
   // PATCH
-  processJobApplication: (id, appId) => `/job-postings/${id}/application/${appId}`,
+  acceptJobApplication: (id) => `/job-applications/${id}/accept`,
+  rejectJobApplication: (id) => `/job-applications/${id}/reject`,
+  startJob: (id) => `/job-applications/${id}/start`,
+  terminateJob: (id) => `/job-applications/${id}/terminate`,
 
   // POST
   reviewUser: (id) => `/users/${id}/review`,

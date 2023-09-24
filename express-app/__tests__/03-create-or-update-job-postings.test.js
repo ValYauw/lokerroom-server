@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 const { encrypt } = require('../helpers/password'); 
 const { sequelize } = require('../models');
-const entrypoints = require('./entrypoints');
+const entrypoints = require('../config/testing-entrypoints');
 
-const dummyDate = new Date('01-01-2020');
+const dummyDate = new Date('2020-01-01T00:00:00');
 
 /* 
  * START SEED DATA

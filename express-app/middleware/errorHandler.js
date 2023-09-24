@@ -26,6 +26,11 @@ function errorHandler(err, req, res, next) {
       message = "Forbidden access"
       break;
 
+    case "BadCredentials":
+      statusCode = 400;
+      message = err.message;
+      break;
+
     case "SequelizeValidationError":
     case "SequelizeUniqueConstraintError":
       statusCode = 400;

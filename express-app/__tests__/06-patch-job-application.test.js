@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('../app');
 const { encrypt } = require('../helpers/password'); 
 const { sequelize } = require('../models');
-const entrypoints = require('./entrypoints');
+const entrypoints = require('../config/testing-entrypoints');
 
-const dummyDate = new Date('01-01-2020');
+const dummyDate = new Date('2020-01-01T00:00:00');
 
 /* 
  * START SEED DATA
@@ -148,7 +148,7 @@ const jobApplications = [
   {
     UserId: 2,
     JobPostingId: 3,
-    applicationStatus: 'Processing',
+    applicationStatus: 'Accepted',
     isEmployed: null,
     startDateOfEmployment: null,
     endDateOfEmployment: null,
@@ -208,11 +208,8 @@ describe('PATCH Job Application', () => {
   it('should successfully patch a job application (accept application)', async () => {
 
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(1, 1))
-      .set('access_token', employer_access_token)
-      .send({
-        applicationStatus: 'Accepted'
-      });
+      .patch(entrypoints.acceptJobApplication(1))
+      .set('access_token', employer_access_token);
     expect(response.statusCode).toBe(200);
 
     const fetchResponse = await request(app)
@@ -221,15 +218,13 @@ describe('PATCH Job Application', () => {
     expect(fetchResponse.statusCode).toBe(200);
     const jobApplications = fetchResponse.body;
     const { 
-      jobPosting, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment 
-    } = jobApplications[1];
-    const today = new Date();
+      id, jobPosting, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment 
+    } = jobApplications[2];
+    expect(id).toBe(1);
     expect(jobPosting.id).toBe(1);
     expect(applicationStatus).toBe("Accepted");
-    expect(isEmployed).toBe(true);
-    expect(startDateOfEmployment.getDate()).toBe(today.getDate());
-    expect(startDateOfEmployment.getMonth()).toBe(today.getMonth());
-    expect(startDateOfEmployment.getYear()).toBe(today.getYear());
+    expect(isEmployed).toBeNull();
+    expect(startDateOfEmployment).toBeNull();
     expect(endDateOfEmployment).toBeNull();
 
   });
@@ -237,11 +232,8 @@ describe('PATCH Job Application', () => {
   it('should successfully patch a job application (reject application)', async () => {
 
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(2, 2))
-      .set('access_token', access_token)
-      .send({
-        applicationStatus: 'Rejected'
-      });
+      .patch(entrypoints.rejectJobApplication(2))
+      .set('access_token', employer_access_token);;
     expect(response.statusCode).toBe(200);
 
     const fetchResponse = await request(app)
@@ -250,8 +242,9 @@ describe('PATCH Job Application', () => {
     expect(fetchResponse.statusCode).toBe(200);
     const jobApplications = fetchResponse.body;
     const { 
-      jobPosting, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment 
-    } = jobApplications[0];
+      id, jobPosting, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment 
+    } = jobApplications[1];
+    expect(id).toBe(2);
     expect(jobPosting.id).toBe(2);
     expect(applicationStatus).toBe("Rejected");
     expect(isEmployed).toBeNull();
@@ -260,14 +253,11 @@ describe('PATCH Job Application', () => {
 
   });
 
-  it('should successfully patch a job application (finished job)', async () => {
+  it('should successfully patch a job application (started job)', async () => {
 
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(1, 1))
-      .set('access_token', employer_access_token)
-      .send({
-        isEmployed: false
-      });
+      .patch(entrypoints.startJob(1))
+      .set('access_token', employer_access_token);
     expect(response.statusCode).toBe(200);
 
     const fetchResponse = await request(app)
@@ -276,64 +266,83 @@ describe('PATCH Job Application', () => {
     expect(fetchResponse.statusCode).toBe(200);
     const jobApplications = fetchResponse.body;
     const { 
-      jobPosting, applicationStatus, isEmployed, endDateOfEmployment 
-    } = jobApplications[1];
+      id, jobPosting, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment
+    } = jobApplications[2];
     const today = new Date();
+    const compareDate = new Date(startDateOfEmployment);
+    expect(id).toBe(1);
+    expect(jobPosting.id).toBe(1);
+    expect(applicationStatus).toBe("Accepted");
+    expect(isEmployed).toBe(true);
+    expect(compareDate.getDate()).toBe(today.getDate());
+    expect(compareDate.getMonth()).toBe(today.getMonth());
+    expect(compareDate.getYear()).toBe(today.getYear());
+    expect(endDateOfEmployment).toBeNull();
+
+  });
+
+  it('should successfully patch a job application (finished job)', async () => {
+
+    const response = await request(app)
+      .patch(entrypoints.terminateJob(1))
+      .set('access_token', employer_access_token);
+    expect(response.statusCode).toBe(200);
+
+    const fetchResponse = await request(app)
+      .get(entrypoints.myJobApplications)
+      .set('access_token', applicant_access_token);
+    expect(fetchResponse.statusCode).toBe(200);
+    const jobApplications = fetchResponse.body;
+    const { 
+      id, jobPosting, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment 
+    } = jobApplications[2];
+    const today = new Date();
+    const compareDate = new Date(endDateOfEmployment);
+    expect(id).toBe(1);
     expect(jobPosting.id).toBe(1);
     expect(applicationStatus).toBe("Accepted");
     expect(isEmployed).toBe(false);
-    expect(endDateOfEmployment.getDate()).toBe(today.getDate());
-    expect(endDateOfEmployment.getMonth()).toBe(today.getMonth());
-    expect(endDateOfEmployment.getYear()).toBe(today.getYear());
+    expect(startDateOfEmployment).not.toBeNull();
+    expect(compareDate.getDate()).toBe(today.getDate());
+    expect(compareDate.getMonth()).toBe(today.getMonth());
+    expect(compareDate.getYear()).toBe(today.getYear());
 
   });
 
   it('should fail to patch a non-existent job application', async () => {
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(1, 200))
-      .set('access_token', employer_access_token)
-      .send({
-        applicationStatus: 'Accepted'
-      });
+      .patch(entrypoints.acceptJobApplication(200))
+      .set('access_token', employer_access_token);
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toBeDefined();
   });
 
   it('should fail to patch a job application with an invalid id', async () => {
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(1, "abcd"))
-      .set('access_token', employer_access_token)
-      .send({
-        applicationStatus: 'Accepted'
-      });
+      .patch(entrypoints.acceptJobApplication("abcd"))
+      .set('access_token', employer_access_token);
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toBeDefined();
   });
 
   it('should fail to patch a job application with no authentication', async () => {
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(1, 1))
-      .send({
-        applicationStatus: 'Accepted'
-      });
-    expect(response.statusCode).toBe(404);
+      .patch(entrypoints.acceptJobApplication(3));
+    expect(response.statusCode).toBe(401);
     expect(response.body.message).toBeDefined();
   });
 
   it('should forbid to patch a job application if the user is not the author of the job posting', async () => {
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(3, 3))
-      .set('access_token', applicant_access_token)
-      .send({
-        applicationStatus: 'Accepted'
-      });
+      .patch(entrypoints.acceptJobApplication(3))
+      .set('access_token', applicant_access_token);
     expect(response.statusCode).toBe(403);
     expect(response.body.message).toBeDefined();
   });
 
   it('should fail to patch a job application if the application status is an invalid string', async () => {
     const response = await request(app)
-      .patch(entrypoints.processJobApplication(3, 3))
+      .patch(entrypoints.acceptJobApplication(3))
       .set('access_token', employer_access_token)
       .send({
         applicationStatus: 'gibberish'
