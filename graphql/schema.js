@@ -68,6 +68,8 @@ const typeDefs = `#graphql
     title: String
     description: String
     address: String
+    long: Float
+    lat: Float
     category: Category
     minSalary: Int
     maxSalary: Int
@@ -131,6 +133,8 @@ const typeDefs = `#graphql
     title: String
     description: String
     address: String
+    long: Float
+    lat: Float
     categoryId: Int
     minSalary: Int
     maxSalary: Int

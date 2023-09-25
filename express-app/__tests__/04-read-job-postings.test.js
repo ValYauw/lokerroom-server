@@ -70,6 +70,8 @@ const jobPostings = [
     title: "Pekerja kontruksi",
     description: "Job Posting 1",
     address: "Jakarta",
+    long: 2301.1,
+    lat: 189.2,
     CategoryId: 1,
     minSalary: 2000_000,
     maxSalary: 3000_000,
@@ -86,6 +88,8 @@ const jobPostings = [
     title: "ART",
     description: "Job Posting 2",
     address: "Bandung",
+    long: 3101.1,
+    lat: 139.5,
     CategoryId: 2,
     minSalary: 1300_000,
     maxSalary: 1600_000,
@@ -102,6 +106,8 @@ const jobPostings = [
     title: "Koki",
     description: "Job Posting 3",
     address: "Jakarta",
+    long: 201.9,
+    lat: 142.4,
     CategoryId: 3,
     minSalary: 2500_000,
     maxSalary: 3000_000,
@@ -118,6 +124,8 @@ const jobPostings = [
     title: "Onsite drill team",
     description: "Job Posting 4",
     address: "Depok",
+    long: 901.9,
+    lat: 149.2,
     CategoryId: 1,
     minSalary: 3000_000,
     maxSalary: 3500_000,
@@ -134,6 +142,8 @@ const jobPostings = [
     title: "Gamer",
     description: "Job Posting 5",
     address: "Dreamland",
+    long: null,
+    lat: null,
     CategoryId: 1,
     minSalary: 10000_000,
     maxSalary: 15000_000,
@@ -181,12 +191,14 @@ describe('GET Multiple Job Postings', () => {
     expect(numPages).toBe(1);
     expect(fetchedPostings.length).toBe(Math.min(NUM_JOB_POSTINGS_PER_PAGE, 5));
     const { 
-      title, description, address, category, author,  
+      title, description, address, long, lat, category, author,  
       minSalary, maxSalary, requiredGender, maxAge, requiredEducation, 
       status, isUrgent } = fetchedPostings[0];
     expect(title).toBeDefined();
     expect(description).toBeDefined();
     expect(address).toBeDefined();
+    expect(long).toBeDefined();
+    expect(lat).toBeDefined();
     expect(category).toBeDefined();
     expect(author).toBeDefined();
     expect(minSalary).toBeDefined();
@@ -273,12 +285,14 @@ describe('GET One Job Posting', () => {
     expect(response.statusCode).toBe(200);
 
     const { 
-      title, description, address, category, author,  
+      title, description, address, long, lat, category, author,  
       minSalary, maxSalary, requiredGender, maxAge, requiredEducation, 
       status, isUrgent } = response.body;
     expect(title).toBeDefined();
     expect(description).toBeDefined();
     expect(address).toBeDefined();
+    expect(long).toBeDefined();
+    expect(lat).toBeDefined();
     expect(category).toBeDefined();
     expect(author).toBeDefined();
     expect(minSalary).toBeDefined();
