@@ -52,8 +52,8 @@ const typeDefs = `#graphql
     profileDescription: String
     educationLevel: EducationLevel
     appliedJobs: [JobApplication]
-    postedJobs: [JobPosting]
     receivedReviews: [Review]
+    postedJobs: [JobPosting]
   }
   type JobApplication {
     id: Int
@@ -62,6 +62,7 @@ const typeDefs = `#graphql
     isEmployed: Boolean
     startDateOfEmployment: String
     endDateOfEmployment: String
+    applicant: User
   }
   type JobPosting {
     id: Int
@@ -169,22 +170,28 @@ const typeDefs = `#graphql
       isUrgent: Boolean,
       pageNumber: Int
     ): PageOfJobPostings
+    jobApplications(jobPostingId: Int!): [JobApplication]
 
   }
 
   type Mutation {
+    
     register(registerDetails: registerDetails): Response
     login(loginCredentials: loginCredentials): Token
     editUserDetails(userDetails: userDetails): Response
+
     addNewJobPosting(jobPosting: newJobPosting): Response
     editJobPosting(jobPostingId: Int!, jobPosting: newJobPosting): Response
     changeJobPostingStatus(jobPostingId: Int!, jobPostingStatus: JobPostingStatus!): Response
+
     applyToJob(jobPostingId: Int!): Response
+
     acceptJobApplication(jobApplicationId: Int!): Response
     rejectJobApplication(jobApplicationId: Int!): Response
     startEmploymentForJobApplication(jobApplicationId: Int!): Response
     endEmploymentForJobApplication(jobApplicationId: Int!): Response
     addReview(newReview: newReview): Response
+
   }
   
 `;

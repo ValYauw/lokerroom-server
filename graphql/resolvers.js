@@ -101,6 +101,19 @@ const resolvers = {
         return data;
       }
     },
+    jobApplications: async (_, args, context, info) => {
+      const { access_token } = context;
+      const { jobPostingId } = args;
+      const response = await fetch(
+        `${REST_API_SERVICE_URL}/job-postings/${jobPostingId}/applicants`,
+        {
+          headers: { access_token: access_token }
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) throwApiError(data);
+      return data;
+    },
   
     me: async (_, args, context, info) => {
 

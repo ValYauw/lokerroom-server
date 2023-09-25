@@ -26,13 +26,14 @@ router.use(authentication);
 
 router.get('/user', UserController.getLoggedInUserDetails);
 router.get('/user/reviews', UserController.getLoggedInUserReviews);
-router.get('/user/job-applications', UserController.getLoggedInUserJobApplications);
+router.get('/user/job-applications', UserController.getLoggedInUserPostedJobApplications);
 router.get('/user/job-postings', UserController.getLoggedInUserJobPostings);
 router.patch('/user', UserController.editLoggedInUserDetails);
 
 router.post('/job-postings', JobController.addJobPosting);
 router.put('/job-postings/:id', authorization, JobController.updateJobPostingDetails);
 router.patch('/job-postings/:id', authorization, JobController.updateJobPostingStatus);
+router.get('/job-postings/:id/applicants', authorization, UserController.getLoggedInUserReceivedJobApplications);
 
 router.post('/job-postings/:id/application', JobController.applyToJob);
 router.patch('/job-applications/:id/accept', authorizeJobApplicationPrivilege, JobController.acceptJobApplication);

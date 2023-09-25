@@ -13,6 +13,7 @@ const entrypoints = {
   myReviews: '/user/reviews',
   myJobApplications: '/user/job-applications',
   myJobPostings: '/user/job-postings',
+  myJobApplicants: (id) => `/job-postings/${id}/applicants`,
 
   // GET
   jobPostings: ({pageNumber = 1, requiredGender, maxAge, categoryId, education, location, isUrgent} = {}) => {
