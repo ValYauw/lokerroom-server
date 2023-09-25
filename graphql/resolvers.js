@@ -1,7 +1,7 @@
 const axios = require('axios');
 const REST_API_SERVICE_URL = process.env.REST_API_SERVICE_URL;
 // const { dateScalar } = require('./scalars');
-const redis = require('../config/redisConnection');
+const redis = require('./config/redisConnection');
 
 const { getRequestedTopLevelFields } = require('./utils/graphql');
 const { throwApiError } = require('./utils/errorHandler');
