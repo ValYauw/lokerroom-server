@@ -34,10 +34,10 @@ const typeDefs = `#graphql
     email: String
     address: String
     imgUrl: String
-    educationLevel: EducationLevel
     gender: Gender
-    dateOfBirth: Date
+    dateOfBirth: String
     profileDescription: String
+    educationLevel: EducationLevel
     receivedReviews: [Review]
   }
   type Me {
@@ -47,10 +47,10 @@ const typeDefs = `#graphql
     email: String
     address: String
     imgUrl: String
-    educationLevel: EducationLevel
     gender: Gender
-    dateOfBirth: Date
+    dateOfBirth: String
     profileDescription: String
+    educationLevel: EducationLevel
     appliedJobs: [JobApplication]
     postedJobs: [JobPosting]
     receivedReviews: [Review]
@@ -60,8 +60,8 @@ const typeDefs = `#graphql
     jobPosting: JobPosting
     applicationStatus: ApplicationStatus
     isEmployed: Boolean
-    startDateOfEmployment: Date
-    endDateOfEmployment: Date
+    startDateOfEmployment: String
+    endDateOfEmployment: String
   }
   type JobPosting {
     id: Int
@@ -86,6 +86,14 @@ const typeDefs = `#graphql
     content: String
     rating: Int
   }
+  type PageOfUsers {
+    numPages: Int
+    data: [User]
+  }
+  type PageOfJobPostings {
+    numPages: Int
+    data: [JobPosting]
+  }
 
 
   # Response setelah mutation
@@ -109,16 +117,12 @@ const typeDefs = `#graphql
     address: String
     educationId: Int
     gender: Gender
-    dateOfBirth: Date
-    profileDescription: String
+    dateOfBirth: String
   }
   input userDetails {
-    name: String
     address: String
     imgUrl: String
     educationId: Int
-    gender: Gender
-    dateOfBirth: Date
     profileDescription: String
   }
   input newJobPosting {
@@ -142,32 +146,41 @@ const typeDefs = `#graphql
 
   # Schema Query dan Mutation
   type Query {
+
+    categories: [Category]
+    educationLevels: [EducationLevel]
+
     me: Me
-    user(id: Int!): User
-    users(pageNumber: Int): [User]
-    jobPostingById(id: Int!): JobPosting
+    user(userId: Int!): User
+    users(pageNumber: Int): PageOfUsers
+    jobPosting(jobPostingId: Int!): JobPosting
     jobPostings(
       gender: Gender, 
       maxAge: Int, 
       categoryId: Int,
-      maxEducation: EducationLevel, 
+      educationId: Int, 
       location: String, 
       isUrgent: Boolean,
       pageNumber: Int
-    ): [JobPosting]
+    ): PageOfJobPostings
+
   }
+
   type Mutation {
     register(registerDetails: registerDetails): Response
     login(loginCredentials: loginCredentials): Response
     editUserDetails(userDetails: userDetails): Response
-    addNewJobPosting(newJobPosting: newJobPosting): JobPosting
-    editJobPosting(newJobPosting: newJobPosting): JobPosting
-    applyToJob(id: Int): JobApplication
-    acceptJobApplication(id: Int): Response
-    rejectJobApplication(id: Int): Response
-    endEmploymentForJobApplication(id: Int): Response
-    addReview(newReview: newReview): Review
+    addNewJobPosting(jobPosting: newJobPosting): Response
+    editJobPosting(jobPostingId: Int!, jobPosting: newJobPosting): Response
+    changeJobPostingStatus(jobPostingId: Int!, jobPostingStatus: JobPostingStatus!): Response
+    applyToJob(jobPostingId: Int!): Response
+    acceptJobApplication(jobApplicationId: Int!): Response
+    rejectJobApplication(jobApplicationId: Int!): Response
+    startEmploymentForJobApplication(jobApplicationId: Int!): Response
+    endEmploymentForJobApplication(jobApplicationId: Int!): Response
+    addReview(newReview: newReview): Response
   }
+  
 `;
 
-export default typeDefs;
+module.exports = typeDefs;
