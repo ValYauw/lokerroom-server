@@ -98,8 +98,10 @@ const typeDefs = `#graphql
 
   # Response setelah mutation
   type Response {
-    access_token: String
     message: String
+  }
+  type Token {
+    access_token: String
   }
 
 
@@ -168,7 +170,7 @@ const typeDefs = `#graphql
 
   type Mutation {
     register(registerDetails: registerDetails): Response
-    login(loginCredentials: loginCredentials): Response
+    login(loginCredentials: loginCredentials): Token
     editUserDetails(userDetails: userDetails): Response
     addNewJobPosting(jobPosting: newJobPosting): Response
     editJobPosting(jobPostingId: Int!, jobPosting: newJobPosting): Response
