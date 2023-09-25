@@ -12,6 +12,7 @@ async function authentication(req, res, next) {
     });
     if (!user) throw { name: 'Unauthorized' }
     req.user = user;
+    console.log('Authenticated', req.url);
     next();
   } catch(err) {
     next(err);

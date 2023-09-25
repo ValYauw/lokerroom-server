@@ -43,6 +43,14 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: 'Address is required' }
       }
     },
+    long: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+    },
+    lat: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+    },
     CategoryId: {
       type: DataTypes.INTEGER,
       allowNull: true,

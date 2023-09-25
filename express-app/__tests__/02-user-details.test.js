@@ -74,6 +74,20 @@ const users = [
     createdAt: dummyDate,
     updatedAt: dummyDate
   },
+  {
+    name: "Agus Angsa",
+    email: "agus.angsa@mail.com",
+    password: "password",
+    telephone: "081113334453",
+    address: "Jakarta",
+    imgUrl: null,
+    EducationId: 3,
+    gender: "Male",
+    dateOfBirth: new Date("2005-04-02T00:00:00"),
+    profileDescription: "",
+    createdAt: dummyDate,
+    updatedAt: dummyDate
+  }
 ];
 const jobPostings = [
   {
@@ -181,6 +195,16 @@ const jobApplications = [
     endDateOfEmployment: null,
     createdAt: dummyDate,
     updatedAt: dummyDate
+  },
+  {
+    UserId: 3,
+    JobPostingId: 1,
+    applicationStatus: "Rejected",
+    isEmployed: null,
+    startDateOfEmployment: null,
+    endDateOfEmployment: null,
+    createdAt: dummyDate,
+    updatedAt: dummyDate
   }
 ];
 const reviews = [
@@ -237,7 +261,7 @@ describe('GET User without authentication', () => {
 
     const { numPages, data: fetchedUsers } = response.body;
     expect(numPages).toBe(1);
-    expect(fetchedUsers.length).toBe(2);
+    expect(fetchedUsers.length).toBe(3);
     const { 
       name, telephone, email, address, imgUrl, 
       educationLevel, gender, dateOfBirth, profileDescription, 
@@ -310,22 +334,34 @@ describe('GET User without authentication', () => {
 
 describe('GET my details with authentication', () => {
 
-  let access_token;
+  let employer_access_token;
+  let applicant_access_token;
+
   beforeAll(async () => {
-    const response = await request(app)
+
+    const userLoginResponse = await request(app)
       .post(entrypoints.login)
       .send({
         telephone: users[1].telephone,
         password: users[1].password
       });
-    access_token = response.body.access_token;
-  })
+    applicant_access_token = userLoginResponse.body.access_token;
+
+    const response = await request(app)
+      .post(entrypoints.login)
+      .send({
+        telephone: users[0].telephone,
+        password: users[0].password
+      });
+    employer_access_token = response.body.access_token;
+
+  });
 
   it('should get user details for Donal Bebek', async () => {
 
     const response = await request(app)
       .get(entrypoints.me)
-      .set('access_token', access_token);
+      .set('access_token', applicant_access_token);
 
     expect(response.statusCode).toBe(200);
 
@@ -353,9 +389,10 @@ describe('GET my details with authentication', () => {
   });
 
   it('should get jobs that Donal Bebek has applied to', async () => {
+
     const response = await request(app)
       .get(entrypoints.myJobApplications)
-      .set('access_token', access_token);
+      .set('access_token', applicant_access_token);
 
     expect(response.statusCode).toBe(200);
 
@@ -373,7 +410,7 @@ describe('GET my details with authentication', () => {
 
     const response = await request(app)
       .get(entrypoints.myReviews)
-      .set('access_token', access_token);
+      .set('access_token', applicant_access_token);
 
     expect(response.statusCode).toBe(200);
 
@@ -389,16 +426,9 @@ describe('GET my details with authentication', () => {
 
   it('should get jobs that Gober Bebek has posted', async () => {
 
-    const loginResponse = await request(app)
-      .post(entrypoints.login)
-      .send({
-        telephone: users[0].telephone, 
-        password: users[0].password
-      });
-    const access_token = loginResponse.body.access_token;
     const response = await request(app)
       .get(entrypoints.myJobPostings)
-      .set('access_token', access_token);
+      .set('access_token', employer_access_token);
 
     expect(response.statusCode).toBe(200);
 
@@ -416,6 +446,35 @@ describe('GET my details with authentication', () => {
     expect(postedJobs[0].requiredEducation).toBeDefined();
     expect(postedJobs[0].status).toBeDefined();
     expect(postedJobs[0].isUrgent).toBeDefined();
+    
+  });
+
+  it('should get applicants for jobs that Gober Bebek has posted', async () => {
+
+    const response = await request(app)
+      .get(entrypoints.myJobApplicants(1))
+      .set('access_token', employer_access_token);
+
+    expect(response.statusCode).toBe(200);
+
+    const jobApplications = response.body;
+    expect(jobApplications.length).toBe(2);
+    const { applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment, applicant } = jobApplications[0];
+    const { name, telephone, email, address, imgUrl, gender, dateOfBirth, profileDescription, educationLevel } = applicant || {};
+    expect(applicationStatus).toBeDefined();
+    expect(isEmployed).toBeDefined();
+    expect(startDateOfEmployment).toBeDefined();
+    expect(endDateOfEmployment).toBeDefined();
+    expect(applicant).toBeDefined();
+    expect(name).toBeDefined();
+    expect(telephone).toBeDefined();
+    expect(email).toBeDefined();
+    expect(address).toBeDefined();
+    expect(imgUrl).toBeDefined();
+    expect(gender).toBeDefined();
+    expect(dateOfBirth).toBeDefined();
+    expect(profileDescription).toBeDefined();
+    expect(educationLevel).toBeDefined();
     
   });
 

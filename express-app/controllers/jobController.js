@@ -137,7 +137,7 @@ class Controller {
   static async addJobPosting(req, res, next) {
     try {
       let { 
-        title, description, address, 
+        title, description, address, long, lat,
         categoryId, minSalary, maxSalary, 
         requiredGender, maxAge, requiredEducation, isUrgent 
       } = req.body;
@@ -148,7 +148,7 @@ class Controller {
       if (!maxAge) maxAge = null;
       if (!requiredEducation) requiredEducation = null;
       await JobPosting.create({
-        title, description, address, 
+        title, description, address, long, lat,
         CategoryId: categoryId,
         minSalary, maxSalary, requiredGender, maxAge,
         AuthorId: req.user.id,
@@ -167,7 +167,7 @@ class Controller {
     try {
       const { id } = req.params;
       let { 
-        title, description, address, 
+        title, description, address, long, lat,
         categoryId, minSalary, maxSalary, 
         requiredGender, maxAge, requiredEducation, isUrgent 
       } = req.body;
@@ -178,7 +178,7 @@ class Controller {
       if (!maxAge) maxAge = null;
       if (!requiredEducation) requiredEducation = null;
       await JobPosting.update({
-        title, description, address, 
+        title, description, address, long, lat,
         CategoryId: categoryId,
         minSalary, maxSalary, requiredGender, maxAge,
         AuthorId: req.user.id,

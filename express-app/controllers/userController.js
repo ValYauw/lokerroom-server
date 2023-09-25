@@ -184,7 +184,7 @@ class Controller {
     }
   }
 
-  static async getLoggedInUserJobApplications(req, res, next) {
+  static async getLoggedInUserPostedJobApplications(req, res, next) {
     try {
       const { id } = req.user;
       const jobApplications = await JobApplication.findAll({
@@ -250,6 +250,38 @@ class Controller {
         order: [['createdAt', 'DESC'], ['id', 'DESC']]
       });
       res.status(200).json(jobPostings);
+    } catch(err) {
+      next(err);
+    }
+  }
+
+  static async getLoggedInUserReceivedJobApplications(req, res, next) {
+    try {
+      const { id } = req.params;
+      if (!id || isNaN(id)) throw { name: 'NotFoundError' };
+      const jobApplications = await JobApplication.findAll({
+        attributes: {
+          exclude: ['UserId', 'JobPostingId', 'createdAt', 'updatedAt']
+        },
+        where: {
+          JobPostingId: id
+        },
+        include: {
+          model: User,
+          as: 'applicant',
+          attributes: {
+            exclude: ['EducationId', 'password', 'createdAt', 'updatedAt']
+          }, 
+          include: {
+            model: EducationLevel,
+            as: 'educationLevel',
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
+            }
+          }
+        }
+      });
+      res.status(200).json(jobApplications);
     } catch(err) {
       next(err);
     }

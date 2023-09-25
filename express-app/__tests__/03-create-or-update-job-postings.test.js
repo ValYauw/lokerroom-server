@@ -115,6 +115,8 @@ describe('POST Job Posting', () => {
       title: "URGENT!!!!",
       description: "Butuh orang cepat",
       address: "Jakarta",
+      long: 1009.3,
+      lat: 67.2,
       categoryId: 1,
       minSalary: 300_000,
       maxSalary: 800_000,
@@ -134,13 +136,15 @@ describe('POST Job Posting', () => {
       .get(entrypoints.jobPosting(1));
     expect(fetchResponse.statusCode).toBe(200);
     const { 
-      title, description, address, category,
+      title, description, address, long, lat, category,
       minSalary, maxSalary, author, requiredGender, 
       maxAge, requiredEducation, isUrgent
     } = fetchResponse.body;
     expect(title).toBe(testData.title);
     expect(description).toBe(testData.description); 
     expect(address).toBe(testData.address);
+    expect(long).toBe(testData.long);
+    expect(lat).toBe(testData.lat);
     expect(category.id).toBe(testData.categoryId);
     expect(minSalary).toBe(testData.minSalary);
     expect(maxSalary).toBe(testData.maxSalary);
@@ -171,13 +175,15 @@ describe('POST Job Posting', () => {
       .get(entrypoints.jobPosting(2));
     expect(fetchResponse.statusCode).toBe(200);
     const { 
-      title, description, address, category,
+      title, description, address, long, lat, category, 
       minSalary, maxSalary, author, requiredGender, 
       maxAge, requiredEducation, isUrgent
     } = fetchResponse.body;
     expect(title).toBe(testData.title);
     expect(description).toBe(testData.description); 
     expect(address).toBe(testData.address);
+    expect(long).toBeNull();
+    expect(lat).toBeNull();
     expect(category.id).toBe(testData.categoryId);
     expect(minSalary).toBeNull();
     expect(maxSalary).toBeNull();
@@ -195,6 +201,8 @@ describe('POST Job Posting', () => {
       title: "URGENT!!!!",
       description: "Butuh orang cepat",
       address: "Jakarta",
+      long: 107.2,
+      lat: 3.2,
       categoryId: 1,
       minSalary: 300_000,
       maxSalary: 800_000,
@@ -304,6 +312,8 @@ describe('PUT Job Posting', () => {
       title: "Kera kode",
       description: "Butuh kera kode yang bekerja pagi siang malam",
       address: "Jakarta",
+      long: 76.1,
+      lat: 90.1,
       categoryId: 1,
       minSalary: 1000_000,
       maxSalary: 1800_000,
@@ -323,13 +333,15 @@ describe('PUT Job Posting', () => {
       .get(entrypoints.jobPosting(1));
     expect(fetchResponse.statusCode).toBe(200);
     const { 
-      title, description, address, category,
+      title, description, address, long, lat, category,
       minSalary, maxSalary, author, requiredGender, 
       maxAge, requiredEducation, isUrgent
     } = fetchResponse.body;
     expect(title).toBe(testData.title);
     expect(description).toBe(testData.description); 
     expect(address).toBe(testData.address);
+    expect(long).toBe(testData.long);
+    expect(lat).toBe(testData.lat);
     expect(category.id).toBe(testData.categoryId);
     expect(minSalary).toBe(testData.minSalary);
     expect(maxSalary).toBe(testData.maxSalary);
@@ -347,6 +359,8 @@ describe('PUT Job Posting', () => {
       title: "Kera kode",
       description: "Butuh kera kode yang bekerja pagi siang malam",
       address: "Jakarta",
+      long: 76.1,
+      lat: 90.1,
       categoryId: 1,
       minSalary: 1000_000,
       maxSalary: 1800_000,
@@ -377,6 +391,8 @@ describe('PUT Job Posting', () => {
       title: "Kera kode",
       description: "Butuh kera kode yang bekerja pagi siang malam",
       address: "Jakarta",
+      long: 76.1,
+      lat: 90.1,
       categoryId: 1,
       minSalary: 1000_000,
       maxSalary: 1800_000,
