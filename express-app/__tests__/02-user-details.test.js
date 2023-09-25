@@ -87,7 +87,7 @@ const users = [
     profileDescription: "",
     createdAt: dummyDate,
     updatedAt: dummyDate
-  },
+  }
 ];
 const jobPostings = [
   {
