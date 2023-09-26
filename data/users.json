@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "name": "Gober Bebek",
     "email": "gober.bebek@mail.com",
     "password": "password",
@@ -9,9 +10,10 @@
     "EducationId": 2,
     "gender": "Male",
     "dateOfBirth": "1985-01-30T00:00:00",
-    "profileDescription": ""
+    "profileDescription": "Entrepreneur. Richest man in the world."
   },
   {
+    "id": 2,
     "name": "Donal Bebek",
     "email": "donal.bebek@mail.com",
     "password": "password",
@@ -21,6 +23,32 @@
     "EducationId": 3,
     "gender": "Male",
     "dateOfBirth": "1999-04-01T00:00:00",
-    "profileDescription": ""
+    "profileDescription": "Self-driven. Mencari nafkah demi tiga keponakan saya."
+  },
+  {
+    "id": 3,
+    "name": "Agus Angsa",
+    "email": "agus.angsa@mail.com",
+    "password": "password",
+    "telephone": "081111332467",
+    "address": "Jakarta",
+    "imgUrl": null,
+    "EducationId": 3,
+    "gender": "Male",
+    "dateOfBirth": "1998-07-21T00:00:00",
+    "profileDescription": "Self-starter. D1 dalam background accounting. Bersedia bekerja di Jakarta."
+  },
+  {
+    "id": 4,
+    "name": "Barto Banks",
+    "email": "barto.banks@mail.com",
+    "password": "password",
+    "telephone": "081115634467",
+    "address": "Jakarta",
+    "imgUrl": null,
+    "EducationId": 3,
+    "gender": "Male",
+    "dateOfBirth": "1995-02-11T00:00:00",
+    "profileDescription": "Entrepreneur. Wanna be the richest man in the world."
   }
 ]

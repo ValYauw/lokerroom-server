@@ -7,11 +7,16 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const rawSeedData = JSON.parse(fs.readFileSync('../data/job-applications.json'));
     const seedData = rawSeedData.map(el => {
+      let { UserId, JobPostingId, applicationStatus, isEmployed, startDateOfEmployment, endDateOfEmployment } = el;
       const createdAt = new Date();
       const updatedAt = new Date();
-      const startDateOfEmployment = el.startDateOfEmployment ? new Date(el.startDateOfEmployment) : null;
-      const endDateOfEmployment = el.endDateOfEmployment ? new Date(el.endDateOfEmployment) : null;
-      return { ...el, startDateOfEmployment, endDateOfEmployment, createdAt, updatedAt }
+      startDateOfEmployment = startDateOfEmployment ? new Date(startDateOfEmployment) : null;
+      endDateOfEmployment = endDateOfEmployment ? new Date(endDateOfEmployment) : null;
+      return { 
+        UserId, JobPostingId, applicationStatus, isEmployed, 
+        startDateOfEmployment, endDateOfEmployment, 
+        createdAt, updatedAt 
+      }
     });
     await queryInterface.bulkInsert('JobApplications', seedData, {});
   },

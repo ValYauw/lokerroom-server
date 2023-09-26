@@ -8,11 +8,18 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const rawSeedData = JSON.parse(fs.readFileSync('../data/users.json'));
     const seedData = rawSeedData.map(el => {
+      let { 
+        name, email, password, telephone, address, imgUrl, EducationId, gender, dateOfBirth, profileDescription 
+      } = el;
+      password = encrypt(password);
+      dateOfBirth = new Date(dateOfBirth);
       const createdAt = new Date();
       const updatedAt = new Date();
-      const password = encrypt(el.password);
-      const dateOfBirth = new Date(el.dateOfBirth);
-      return { ...el, password, dateOfBirth, createdAt, updatedAt }
+      return { 
+        name, email, password, telephone, address, 
+        imgUrl, EducationId, gender, dateOfBirth, profileDescription, 
+        createdAt, updatedAt 
+      }
     });
     await queryInterface.bulkInsert('Users', seedData, {});
   },

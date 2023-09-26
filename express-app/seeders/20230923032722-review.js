@@ -7,9 +7,10 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const rawSeedData = JSON.parse(fs.readFileSync('../data/reviews.json'));
     const seedData = rawSeedData.map(el => {
+      const { EmployerId, UserId, JobPostingId, content, rating } = el;
       const createdAt = new Date();
       const updatedAt = new Date();
-      return { ...el, createdAt, updatedAt }
+      return { EmployerId, UserId, JobPostingId, content, rating, createdAt, updatedAt }
     });
     await queryInterface.bulkInsert('Reviews', seedData, {});
   },

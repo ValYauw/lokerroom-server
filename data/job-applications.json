@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "UserId": 2,
     "JobPostingId": 1,
     "applicationStatus": "Accepted",
@@ -8,6 +9,16 @@
     "endDateOfEmployment": "2022-12-01T00:00:00"
   },
   {
+    "id": 2,
+    "UserId": 3,
+    "JobPostingId": 1,
+    "applicationStatus": "Accepted",
+    "isEmployed": false,
+    "startDateOfEmployment": "2022-08-31T00:00:00",
+    "endDateOfEmployment": "2022-12-01T00:00:00"
+  },
+  {
+    "id": 3,
     "UserId": 2,
     "JobPostingId": 2,
     "applicationStatus": "Processing",
@@ -16,6 +27,7 @@
     "endDateOfEmployment": null
   },
   {
+    "id": 4,
     "UserId": 2,
     "JobPostingId": 4,
     "applicationStatus": "Rejected",
@@ -24,6 +36,7 @@
     "endDateOfEmployment": null
   },
   {
+    "id": 5,
     "UserId": 2,
     "JobPostingId": 5,
     "applicationStatus": "Accepted",
@@ -32,6 +45,7 @@
     "endDateOfEmployment": "2023-02-01T00:00:00"
   },
   {
+    "id": 6,
     "UserId": 2,
     "JobPostingId": 6,
     "applicationStatus": "Accepted",
@@ -40,6 +54,7 @@
     "endDateOfEmployment": "2023-02-20T00:00:00"
   },
   {
+    "id": 7,
     "UserId": 2,
     "JobPostingId": 7,
     "applicationStatus": "Accepted",
