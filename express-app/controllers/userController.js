@@ -226,14 +226,25 @@ class Controller {
           {
             model: JobPosting,
             as: "jobPosting",
-            attributes: ["id", "title"],
-            include: {
-              model: User,
-              as: "author",
-              attributes: {
-                exclude: ["password", "createdAt", "updatedAt"],
-              },
+            attributes: {
+              exclude: ['createdAt', 'updatedAt']
             },
+            include: [
+              {
+                model: User,
+                as: "author",
+                attributes: {
+                  exclude: ["password", "createdAt", "updatedAt"],
+                },
+              },
+              {
+                model: Category,
+                as: "category",
+                attributes: {
+                  exclude: ["createdAt", "updatedAt"],
+                },
+              },
+          ]
           },
         ],
         order: [
