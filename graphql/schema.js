@@ -105,6 +105,7 @@ const typeDefs = `#graphql
   }
   type Token {
     access_token: String
+    userId: Int
   }
 
 
