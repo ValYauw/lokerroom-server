@@ -1,0 +1,20 @@
+services: 
+  express-app:
+    build: ./express-app
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=4000
+      - DATABASE_URL=${DB_URI}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+  graphql:
+    build: ./graphql
+    ports: 
+      - "80:4001"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=4001
+      - REST_API_SERVICE_URL=http://express-app-service:4000
+      - REDIS_HOST_URL=${REDIS_HOST_URL}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
