@@ -15,6 +15,6 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV}
       - PORT=4001
-      - REST_API_SERVICE_URL=http://express-app-service:4000
+      - REST_API_SERVICE_URL=http://express-app:4000
       - REDIS_HOST_URL=${REDIS_HOST_URL}
       - REDIS_PASSWORD=${REDIS_PASSWORD}
