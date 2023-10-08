@@ -10,7 +10,7 @@ LokerRoom is a group project between [Arbi M. Ihsan](https://github.com/arbiihsa
 
 ## Application Demo
 
-![Demo](demo-app.gif)
+![Demo](demo-app.png)
 
 ## Technical Overview
 
